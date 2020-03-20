@@ -1,0 +1,19 @@
+button {
+    background: initial;
+}
+
+button:focus{
+  outline: 0;
+}
+
+button::after{
+  border: none;
+}
+
+
+page {
+  background: rgba(21, 19, 72, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}

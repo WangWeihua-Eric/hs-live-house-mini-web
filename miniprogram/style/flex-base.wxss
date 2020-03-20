@@ -1,0 +1,38 @@
+.f-c-js-ac {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.f-jb-ac {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.f-js-ac {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.f-c-jc-as {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.f-c-jc-ac {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.f-jc-ac {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

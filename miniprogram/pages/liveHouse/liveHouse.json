@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "12344 人正在一起学",
+  "usingComponents": {
+    "van-image": "@vant/weapp/image/index",
+    "app-in-live-card": "./components/inLiveCard/app-in-live-card",
+    "app-lesson-card-item": "./components/lesson-card-item/app-lesson-card-item"
+  }
+}
