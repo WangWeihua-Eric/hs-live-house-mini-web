@@ -20,7 +20,7 @@ export function http(url, param, method, header = {'content-type': 'application/
     if (!param.appSign) {
         param = {
             ...param,
-            appSign: 'hongsongkebiao'
+            appSign: 'livehouse'
         }
     }
     return new Promise((resolve, reject) => {

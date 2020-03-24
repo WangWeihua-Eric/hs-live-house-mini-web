@@ -13,7 +13,7 @@ export function getSessionId() {
         if (res.code) {
             const url = '/auth/api/wechatlogin'
             const param = {
-                appSign: 'hongsongkebiao',
+                appSign: 'livehouse',
                 code: res.code
             }
             return http.post(url, param, 'login')
@@ -46,14 +46,14 @@ export function initSessionId() {
 
 function setSessionId() {
     getSessionId().then(res => {
-        if (res && res.result && res.result.state && res.result.state.code === '0' && res.result.data) {
-            const sessionId = res.result.data.sessionId
+        if (res && res.state && res.state.code === '0' && res.data) {
+            const sessionId = res.data.sessionId
             if (sessionId) {
-                userBase.setGlobalData(res.result.data)
+                userBase.setGlobalData(res.data)
                 wx.setStorage({
                     key:"sessionId",
                     data: {
-                        ...res.result.data,
+                        ...res.data,
                         updateTime: new Date().getTime()
                     }
                 })

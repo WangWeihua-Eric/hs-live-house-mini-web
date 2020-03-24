@@ -1,14 +1,14 @@
 <view class="content f-jb-ac">
     <view class="content-left f-js-ac">
-        <van-image width="142rpx" height="142rpx" radius="19.5rpx" lazy-load src="../../../../images/test2.png"></van-image>
+        <van-image width="142rpx" height="142rpx" radius="19.5rpx" lazy-load src="{{lessonData.lecturer.avatar}}"></van-image>
         <view class="lesson-info f-c-jc-as">
-            <view class="lesson-name">经典瑜伽课</view>
-            <view class="teacher-name">雨嘉老师</view>
-            <view class="lesson-time">3 月 6 日 13:20 - 14:00</view>
+            <view class="lesson-name">{{lessonData.title}}</view>
+            <view class="teacher-name">{{lessonData.lecturer.anme}}</view>
+            <view class="lesson-time">{{lessonData.time}}</view>
         </view>
     </view>
     <view class="card-right f-c-jc-ac">
         <view class="book-btn f-jc-ac">预约观看</view>
-        <view class="book-number">7783 人成功预约</view>
+        <view class="book-number">{{lessonData.totalBook}}</view>
     </view>
 </view>

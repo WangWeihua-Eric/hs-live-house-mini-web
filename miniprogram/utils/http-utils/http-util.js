@@ -39,11 +39,11 @@ export class HttpUtil {
         }
         switch (environment) {
             case 'dev': {
-                this.host = 'https://www.hongsong.club'
+                this.host = 'https://dev.hongsong.club'
                 break
             }
             case 'beta': {
-                this.host = 'https://www.hongsong.club'
+                this.host = 'https://dev.hongsong.club'
                 break
             }
             case 'prod': {
@@ -64,7 +64,7 @@ export class HttpUtil {
             }
         }
         return http(this.host + url, param, 'POST').then(res => {
-            return res;
+            return res.result;
         })
     }
 

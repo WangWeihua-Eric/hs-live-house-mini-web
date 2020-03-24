@@ -20,6 +20,39 @@ Page {
     height: 636rpx;
 }
 
+.header-tag {
+    width:72rpx;
+    height:33rpx;
+    font-size:24rpx;
+    font-family:PingFangSC-Regular,PingFang SC;
+    color:rgba(50,23,0,1);
+    position: absolute;
+    top: 31rpx;
+    left: 49rpx;
+}
+
+.header-time {
+    width:206rpx;
+    height:42rpx;
+    font-size:30rpx;
+    font-weight: bold;
+    font-family:PingFangSC-Regular,PingFang SC;
+    color:white;
+    position: absolute;
+    top: 191rpx;
+    right: 91rpx;
+    margin-top: 10rpx;
+    font-style: italic;
+}
+
+.header-title {
+    position: absolute;
+    top: 90rpx;
+    left: 74rpx;
+    width: 603rpx;
+    height: 117rpx;
+}
+
 .bg-bottom {
     width: 750rpx;
     height: 1164rpx;
@@ -32,7 +65,7 @@ Page {
     width: 502rpx;
     height: 306rpx;
     position: absolute;
-    top: 700rpx;
+    top: 740rpx;
     z-index: 0;
 }
 
@@ -73,13 +106,13 @@ Page {
 }
 
 .share-btn {
-    width:490rpx;
-    height:110rpx;
-    background:rgba(242,199,129,1);
-    border-radius:65rpx;
-    font-size:42rpx;
-    font-family:PingFangSC-Medium,PingFang SC;
-    font-weight:500;
-    color:rgba(50,23,0,1);
+    width: 490rpx;
+    height: 110rpx;
+    background: rgba(242, 199, 129, 1);
+    border-radius: 65rpx;
+    font-size: 42rpx;
+    font-family: PingFangSC-Medium,PingFang SC;
+    font-weight: 500;
+    color: rgba(50, 23, 0, 1);
     z-index: 1;
 }

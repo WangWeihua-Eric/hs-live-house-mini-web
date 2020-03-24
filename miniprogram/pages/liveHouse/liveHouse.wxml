@@ -1,13 +1,18 @@
 <view class="content">
-    <image class="bg-top" lazy-load="{{true}}" src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/bg-top.png"></image>
+    <image class="bg-top" src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/bg-top.png"></image>
+
+    <view class="header-tag">第一期</view>
+    <view class="header-time">03.05 - 03.12</view>
+
+    <image class="header-title" lazy-load="{{true}}" src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/header-title.png"></image>
 
     <view class="in-live-card">
         <app-in-live-card></app-in-live-card>
     </view>
 
     <view class="book-list">
-        <view class="book-list-item" wx:for="{{listTest}}" wx:for-item="item" wx:for-index="index" wx:key="index">
-            <app-lesson-card-item></app-lesson-card-item>
+        <view class="book-list-item" wx:for="{{scheduleList}}" wx:for-item="item" wx:for-index="index" wx:key="index">
+            <app-lesson-card-item lessonData="{{item}}"></app-lesson-card-item>
         </view>
     </view>
 
