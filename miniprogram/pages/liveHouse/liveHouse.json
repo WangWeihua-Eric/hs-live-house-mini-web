@@ -1,7 +1,9 @@
 {
   "navigationBarTitleText": "12344 人正在一起学",
+  "navigationStyle": "default",
+  "navigationBarBackgroundColor": "#F6F6F6",
+  "navigationBarTextStyle": "black",
   "usingComponents": {
-    "van-image": "@vant/weapp/image/index",
     "app-in-live-card": "./components/inLiveCard/app-in-live-card",
     "app-lesson-card-item": "./components/lesson-card-item/app-lesson-card-item"
   }

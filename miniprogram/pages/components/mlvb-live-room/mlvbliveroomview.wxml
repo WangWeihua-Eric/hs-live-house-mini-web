@@ -1,0 +1,20 @@
+<!--<block wx:if="{{template == 'float'}}">-->
+        <!--    <import src='./floattemplate/floattemplate.wxml' />-->
+        <!--    <template is="floattemplate" data="{{debug, menuItems, isCaster, mainPusherInfo, beauty, muted, pureaudio, userName, visualPlayers, linkPusherInfo, members, mode,roomname,headerHeight,statusBarHeight}}" />-->
+        <!--</block>-->
+
+
+<app-live-pusher-player wx:if="{{template === 'float'}}" roomTextList="{{roomTextList}}" debug="{{debug}}"
+                        menuItems="{{menuItems}}"
+                        isCaster="{{isCaster}}" mainPusherInfo="{{mainPusherInfo}}" beauty="{{beauty}}"
+                        muted="{{muted}}" pureaudio="{{pureaudio}}" userName="{{userName}}"
+                        visualPlayers="{{visualPlayers}}" linkPusherInfo="{{linkPusherInfo}}" members="{{members}}"
+                        mode="{{mode}}" roomname="{{roomname}}" headerHeight="{{headerHeight}}"
+                        statusBarHeight="{{statusBarHeight}}"
+                        pusherStatus="{{pusherStatus}}"
+                        bind:mainPushEvent="onMainPushEvent"
+                        bind:sendTextMsgEvent="onSendTextMsgEvent"
+                        bind:lintTeacher="onLinkTeacherEvent"></app-live-pusher-player>
+
+
+

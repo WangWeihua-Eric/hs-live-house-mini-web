@@ -1,12 +1,14 @@
 <view class="content">
-    <image class="bg-top" src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/bg-top.png"></image>
+    <image class="bg-top" lazy-load="{{true}}"
+           src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/bg-top.png"></image>
 
-    <view class="header-tag">第一期</view>
+    <view class="header-tag" bindtap="refreshLiveRoom">第一期</view>
     <view class="header-time">03.05 - 03.12</view>
 
-    <image class="header-title" lazy-load="{{true}}" src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/header-title.png"></image>
+    <image class="header-title" lazy-load="{{true}}"
+           src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/header-title.png" bindtap="jumpToLive"></image>
 
-    <view class="in-live-card">
+    <view class="in-live-card" bindtap="jumpLiveRoom">
         <app-in-live-card></app-in-live-card>
     </view>
 
@@ -19,10 +21,12 @@
     <view class="share-btn-info f-jc-ac">
         <view class="share-btn f-jc-ac">邀请好友一起观看</view>
 
-        <image class="bg-bottom" lazy-load="{{true}}" src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/bg-bottom.png"></image>
+        <image class="bg-bottom" lazy-load="{{true}}"
+               src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/bg-bottom.png"></image>
     </view>
 
     <view class="bg-start-content">
-        <image class="bg-start" lazy-load="{{true}}" src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/bg-start.png"></image>
+        <image class="bg-start" lazy-load="{{true}}"
+               src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/bg-start.png"></image>
     </view>
 </view>

@@ -36,3 +36,29 @@
     justify-content: center;
     align-items: center;
 }
+
+.f-je-ac {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.f-jb-ae {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.f-c-je-as {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.f-c-je-ac {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}

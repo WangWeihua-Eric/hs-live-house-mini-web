@@ -4,7 +4,6 @@
 	"setting": {
 		"urlCheck": true,
 		"es6": true,
-		"enhance": true,
 		"postcss": true,
 		"minified": true,
 		"newFeature": true,
@@ -20,11 +19,12 @@
 			"disablePlugins": [],
 			"outputPath": ""
 		},
-		"nodeModules": true
+		"nodeModules": true,
+		"enhance": true
 	},
+	"libVersion": "2.8.1",
 	"appid": "wx7854b9c2baa260f7",
 	"projectname": "hs-live-house-mini-web",
-	"libVersion": "2.8.1",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"condition": {
@@ -43,13 +43,40 @@
 		"game": {
 			"list": []
 		},
+		"gamePlugin": {
+			"current": -1,
+			"list": []
+		},
 		"miniprogram": {
 			"current": 0,
 			"list": [
 				{
+					"id": 0,
+					"name": "观众端",
+					"pathName": "pages/mlvb-live-room-demo/live-room-page/room",
+					"query": "",
+					"scene": null
+				},
+				{
 					"id": -1,
-					"name": "db guide",
-					"pathName": "pages/databaseGuide/databaseGuide"
+					"name": "pages/liveHouse/liveHouse",
+					"pathName": "pages/liveHouse/liveHouse",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/home-page/main",
+					"pathName": "pages/home-page/main",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "主播端",
+					"pathName": "pages/mlvb-live-room-demo/new-room-page/roomname",
+					"query": "type=create",
+					"scene": null
 				}
 			]
 		}

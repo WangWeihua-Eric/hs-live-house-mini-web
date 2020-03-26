@@ -1,13 +1,25 @@
 {
   "pages": [
-    "pages/liveHouse/liveHouse"
+    "pages/liveHouse/liveHouse",
+    "pages/home-page/main",
+    "pages/live-player-demo/play",
+    "pages/live-pusher-demo/push-config/push-config",
+    "pages/live-pusher-demo/push",
+    "pages/mlvb-live-room-demo/live-room-page/room",
+    "pages/mlvb-live-room-demo/room-list-page/roomlist",
+    "pages/mlvb-live-room-demo/new-room-page/roomname",
+    "pages/rtc-player-demo/rtplay"
   ],
-  "window": {
-    "backgroundColor": "#F6F6F6",
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#F6F6F6",
-    "navigationBarTextStyle": "black"
+  "networkTimeout": {
+    "request": 60000
   },
-  "sitemapLocation": "sitemap.json",
-  "style": "v2"
+  "window": {
+    "backgroundColor": "#888",
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#000",
+    "navigationBarTitleText": "腾讯视频云",
+    "navigationBarTextStyle": "white",
+    "navigationStyle": "custom"
+  },
+  "sitemapLocation": "sitemap.json"
 }

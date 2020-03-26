@@ -1,0 +1,20 @@
+@import '../../style/flex-base.wxss'
+
+.caster-content {
+    height:100%;
+    width:100%;
+    background-color: white;
+}
+
+.pre-push {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 46rpx 38rpx;
+}
+
+.start-btn {
+    width:526rpx;
+    height:112rpx;
+    background:rgba(233,85,68,1);
+}

@@ -1,0 +1,75 @@
+<view class="audience-content f-c-js-ac" bindtap="onSendRose">
+    <view class="audience-header f-jb-ac">
+        <view class="audience-header-left f-jb-ac">
+            <view class="f-js-ac">
+                <image class="audience-teacher-img" lazy-load="{{true}}"
+                       src="../../images/test2.png"></image>
+                <view class="audience-teacher-info f-c-jc-as">
+                    <view class="audience-teacher-name">雨嘉</view>
+                    <view class="audience-teacher-tag">瑜伽联盟认证导师</view>
+                </view>
+            </view>
+            <image class="add-action-img" lazy-load="{{true}}"
+                   src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/add-action.png"></image>
+        </view>
+        <view class="f-je-ac">
+            <view class="audience-user-img-list f-je-ac">
+                <view class="audience-user-rank f-c-jc-ac">
+                    <image class="audience-user-img" lazy-load="{{true}}"
+                           src="../../images/test2.png"></image>
+                    <image class="audience-user-tag" lazy-load="{{true}}"
+                           src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/one-user.png"></image>
+                </view>
+
+                <view class="audience-user-rank f-c-jc-ac">
+                    <image class="audience-user-img" lazy-load="{{true}}"
+                           src="../../images/test2.png"></image>
+                    <image class="audience-user-tag" lazy-load="{{true}}"
+                           src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/two-user.png"></image>
+                </view>
+
+                <view class="audience-user-rank f-c-jc-ac">
+                    <image class="audience-user-img" lazy-load="{{true}}"
+                           src="../../images/test2.png"></image>
+                    <image class="audience-user-tag" lazy-load="{{true}}"
+                           src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/th-user.png"></image>
+                </view>
+            </view>
+            <view class="switch-window-info f-jc-ac">
+                <image class="switch-window-btn" lazy-load="{{true}}"
+                       src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/switch-window-btn.png"></image>
+            </view>
+        </view>
+    </view>
+    <view class="audience-bottom f-jb-ae">
+        <view class="f-c-je-as">
+            <view class="live-list-content">
+                <scroll-view class=" f-c-je-as" scroll-y scroll-into-view="{{toIndex}}" scroll-with-animation="{{true}}" enable-back-to-top="{{true}}">
+                    <view class="live-text-item" wx:for="{{roomTextList}}" wx:for-item="item" wx:for-index="index"
+                          wx:key="index" id="text-{{index}}">
+                        <text>{{item.userName}}：</text>
+                        <text class="text-msg">{{item.message}}</text>
+                    </view>
+                </scroll-view>
+            </view>
+
+            <view class="f-js-ac">
+                <van-field
+                        custom-style="width:380rpx; height:84rpx; background:rgba(0,0,0,0.25); border-radius:42rpx; box-sizing: border-box; padding-left: 32rpx; font-size:28rpx; font-family:SourceHanSansCN-Normal,SourceHanSansCN; color:rgba(186,182,182,1); display: flex; justify-content: flex-start; align-items: center;"
+                        value="{{ value }}"
+                        placeholder="鼓励一下..."
+                        border="{{ false }}"
+                        bind:confirm="onConfirm"
+                />
+
+                <image class="share-live"
+                       src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/share-live-btn.png"></image>
+                <view class="send-rose" catch:tap="onLinkTeacher">
+                    <image class="send-rose"
+                           src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/join-live-btn.png"></image>
+                </view>
+            </view>
+        </view>
+        <app-call-rose id="id_sendrose"></app-call-rose>
+    </view>
+</view>

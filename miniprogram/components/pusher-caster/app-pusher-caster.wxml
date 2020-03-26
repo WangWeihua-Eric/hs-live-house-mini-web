@@ -1,0 +1,11 @@
+<view class="caster-content">
+    <!--  直播预备  -->
+    <view>{{pusherStatus}}</view>
+    <view wx:if="{{pusherStatus === 1}}" class="pre-push f-c-je-ac">
+        <view class="start-btn f-jc-ac">开始直播</view>
+        <view>
+            <view>1</view>
+            <view>1</view>
+        </view>
+    </view>
+</view>
