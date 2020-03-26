@@ -1,9 +1,9 @@
 @import '../../style/flex-base.wxss'
 
 .caster-content {
-    height:100%;
-    width:100%;
-    background-color: white;
+    height: 100%;
+    width: 100%;
+/*    background-color: white;*/
 }
 
 .pre-push {
@@ -14,7 +14,107 @@
 }
 
 .start-btn {
-    width:526rpx;
-    height:112rpx;
-    background:rgba(233,85,68,1);
+    width: 526rpx;
+    height: 112rpx;
+    background: rgba(233, 85, 68, 1);
+    font-size: 42rpx;
+    font-family: SourceHanSansCN-Medium,SourceHanSansCN;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 1);
+    letter-spacing: 3rpx;
+}
+
+.caster-bottom {
+    width: 100%;
+    margin-top: 50rpx;
+}
+
+.bottom-util {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-left: 39rpx;
+}
+
+.ready-play {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.ready-text {
+    font-size: 220rpx;
+    font-family: SourceHanSansCN-Bold,SourceHanSansCN;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 1);
+    letter-spacing: 5rpx;
+}
+
+.play-content {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 17rpx 29rpx 46rpx 18rpx;
+}
+
+.play-content-bottom {
+    width: 100%;
+    height: 100%;
+}
+
+.play-util {
+    width: 100%;
+}
+
+.play-message {
+    width: 100%;
+    margin-bottom: 61rpx;
+}
+
+.wait-link {
+    width:166rpx;
+    height:159rpx;
+    background:rgba(0,0,0,0.4);
+    border-radius:20rpx;
+}
+
+.wait-link-number {
+    font-size:72rpx;
+    font-family:PingFangSC-Semibold,PingFang SC;
+    font-weight:600;
+    color:rgba(255,255,255,1);
+}
+
+.wait-lint-text {
+    font-size:32rpx;
+    font-family:SourceHanSansCN-Regular,SourceHanSansCN;
+    color:rgba(255,255,255,1);
+}
+
+.live-list-content {
+    max-height: 369rpx;
+    box-sizing: border-box;
+    padding-left: 9rpx;
+    overflow: scroll;
+}
+
+.scroll-content {
+    max-height: 369rpx;
+}
+
+.live-text-item {
+    max-width: 460rpx;
+    background: rgba(0, 0, 0, 0.29);
+    border-radius: 30rpx;
+    box-sizing: border-box;
+    padding: 16rpx;
+    font-size: 30rpx;
+    font-family: SourceHanSansCN-Normal,SourceHanSansCN;
+    color: rgba(245, 185, 83, 1);
+    margin-bottom: 10rpx;
+}
+
+.text-msg {
+    color: #FFFFFF;
 }

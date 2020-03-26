@@ -1,11 +1,50 @@
 <view class="caster-content">
     <!--  直播预备  -->
-    <view>{{pusherStatus}}</view>
-    <view wx:if="{{pusherStatus === 1}}" class="pre-push f-c-je-ac">
-        <view class="start-btn f-jc-ac">开始直播</view>
-        <view>
-            <view>1</view>
-            <view>1</view>
+    <!--    <view wx:if="{{pusherStatus === 1}}" class="pre-push f-c-je-ac">-->
+    <view wx:if="{{pusherStatus === 1 && playStatus === 0}}" class="pre-push f-c-je-ac">
+        <view class="start-btn f-jc-ac" bindtap="onPlayLive">开始直播</view>
+        <view class="caster-bottom f-je-ac">
+            <image class="bottom-util" lazy-load="{{true}}"
+                   src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/cuty.png"></image>
+            <image class="bottom-util" lazy-load="{{true}}"
+                   src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/switch-look.png"></image>
+        </view>
+    </view>
+
+    <!--  直播倒计时  -->
+    <view wx:if="{{playStatus === 2}}" class="ready-play f-jc-ac">
+        <view class="ready-text f-jc-ac">
+            {{readyTime}}
+        </view>
+    </view>
+
+    <view wx:if="{{playStatus === 3}}" class="play-content f-c-jb-ac">
+        <view></view>
+        <view class="play-content-bottom f-c-je-ac">
+            <view class="play-message f-jb-ae">
+                <view class="live-list-content">
+                    <scroll-view wx:if="{{showMessage}}" class="scroll-content f-c-je-as" scroll-y="{{true}}" scroll-into-view="{{toIndex}}" scroll-with-animation="{{true}}" enable-back-to-top="{{true}}">
+                        <view class="live-text-item" wx:for="{{roomTextList}}" wx:for-item="item" wx:for-index="index"
+                              wx:key="index" id="text-{{index}}">
+                            <text wx:if="{{item.userName}}">{{item.userName}}：</text>
+                            <text class="text-msg">{{item.message}}</text>
+                        </view>
+                    </scroll-view>
+                </view>
+                <view class="wait-link f-c-jc-ac">
+                    <view class="wait-link-number">1</view>
+                    <view class="wait-lint-text">等待连麦</view>
+                </view>
+            </view>
+            <view class="play-util f-jb-ac">
+                <image class="bottom-util" lazy-load="{{true}}" src="{{showMessage ? 'cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/show-message.png' : 'cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/not-show-message.png'}}" bindtap="onShowMessage"></image>
+                <view class="f-je-ac">
+                    <image class="bottom-util" lazy-load="{{true}}"
+                           src="{{beauty === 5 ? 'cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/beauty.png' : 'cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/cuty.png'}}" bindtap="onChangeBeauty"></image>
+                    <image class="bottom-util" lazy-load="{{true}}"
+                           src="{{frontCamera ? 'cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/switch-look.png' : 'cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/back-lock.png'}}" bindtap="onSwitchCameraEvent"></image>
+                </view>
+            </view>
         </view>
     </view>
 </view>

@@ -1,0 +1,4 @@
+<view class="card-content f-c-jc-ac">
+    <image class="to-play" lazy-load="{{true}}" src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/to-play.png"></image>
+    <view class="play-text">现在开播</view>
+</view>

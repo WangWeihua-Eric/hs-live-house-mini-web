@@ -44,10 +44,10 @@
     <view class="audience-bottom f-jb-ae">
         <view class="f-c-je-as">
             <view class="live-list-content">
-                <scroll-view class=" f-c-je-as" scroll-y scroll-into-view="{{toIndex}}" scroll-with-animation="{{true}}" enable-back-to-top="{{true}}">
+                <scroll-view class="scroll-content f-c-je-as" scroll-y="{{true}}" scroll-into-view="{{toIndex}}" scroll-with-animation="{{true}}" enable-back-to-top="{{true}}">
                     <view class="live-text-item" wx:for="{{roomTextList}}" wx:for-item="item" wx:for-index="index"
                           wx:key="index" id="text-{{index}}">
-                        <text>{{item.userName}}：</text>
+                        <text wx:if="{{item.userName}}">{{item.userName}}：</text>
                         <text class="text-msg">{{item.message}}</text>
                     </view>
                 </scroll-view>

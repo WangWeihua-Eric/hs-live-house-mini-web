@@ -1,0 +1,5 @@
+<view class="content">
+    <view bindtap="jumpToLive">
+        <app-live-room-item-card></app-live-room-item-card>
+    </view>
+</view>

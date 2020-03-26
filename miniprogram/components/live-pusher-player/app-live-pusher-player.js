@@ -67,6 +67,18 @@ Component({
                 }
 
             }
+        },
+        onCasterStartEvent() {
+            this.triggerEvent('casterStartEvent')
+        },
+        onChangeBeautyEvent() {
+            const beauty = this.data.beauty
+            this.setData({
+                beauty: beauty === 5 ? 0 : 5
+            })
+        },
+        onSwitchCameraEvent() {
+            this.triggerEvent('switchCameraEvent')
         }
     }
 })

@@ -72,10 +72,10 @@
 					"scene": null
 				},
 				{
-					"id": -1,
+					"id": 3,
 					"name": "主播端",
-					"pathName": "pages/mlvb-live-room-demo/new-room-page/roomname",
-					"query": "type=create",
+					"pathName": "pages/mlvb-live-room-demo/live-room-page/room",
+					"query": "type=create&roomName=11&userName=&pureAudio=false",
 					"scene": null
 				}
 			]

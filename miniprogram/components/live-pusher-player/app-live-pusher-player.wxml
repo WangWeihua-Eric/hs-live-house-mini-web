@@ -12,7 +12,7 @@
                 <slot name="caster"></slot>
             </live-pusher>
             <view class="live-content">
-                <app-pusher-caster roomTextList="{{roomTextList}}" pusherStatus="{{pusherStatus}}"></app-pusher-caster>
+                <app-pusher-caster roomTextList="{{roomTextList}}" pusherStatus="{{pusherStatus}}" beauty="{{beauty}}" bind:switchCameraEvent="onSwitchCameraEvent" bind:casterStartEvent="onCasterStartEvent" bind:changeBeautyEvent="onChangeBeautyEvent"></app-pusher-caster>
             </view>
         </view>
 

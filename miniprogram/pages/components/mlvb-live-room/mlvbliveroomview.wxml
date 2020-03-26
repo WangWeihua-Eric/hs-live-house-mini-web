@@ -12,6 +12,8 @@
                         mode="{{mode}}" roomname="{{roomname}}" headerHeight="{{headerHeight}}"
                         statusBarHeight="{{statusBarHeight}}"
                         pusherStatus="{{pusherStatus}}"
+                        bind:switchCameraEvent="onSwitchCameraEvent"
+                        bind:casterStartEvent="onCasterStartEvent"
                         bind:mainPushEvent="onMainPushEvent"
                         bind:sendTextMsgEvent="onSendTextMsgEvent"
                         bind:lintTeacher="onLinkTeacherEvent"></app-live-pusher-player>

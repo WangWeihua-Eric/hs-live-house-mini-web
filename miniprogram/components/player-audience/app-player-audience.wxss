@@ -1,8 +1,8 @@
 @import '../../style/flex-base.wxss'
 
 .audience-content {
-    height:100%;
-    width:100%;
+    height: 100%;
+    width: 100%;
     box-sizing: border-box;
     padding: 160rpx 20rpx 47rpx 16rpx;
 }
@@ -12,15 +12,15 @@
 }
 
 .audience-header-left {
-    width:365rpx;
-    height:80rpx;
-    background:rgba(0,0,0,0.25);
-    border-radius:45rpx;
+    width: 365rpx;
+    height: 80rpx;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 45rpx;
 }
 
 .audience-teacher-img {
-    width:68rpx;
-    height:68rpx;
+    width: 68rpx;
+    height: 68rpx;
     border-radius: 50%;
     margin-left: 6rpx;
     overflow: hidden;
@@ -32,16 +32,16 @@
 }
 
 .audience-teacher-name {
-    font-size:28rpx;
-    font-family:PingFangSC-Medium,PingFang SC;
-    font-weight:500;
-    color:rgba(255,255,255,1);
+    font-size: 28rpx;
+    font-family: PingFangSC-Medium,PingFang SC;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 1);
 }
 
 .audience-teacher-tag {
-    font-size:26rpx;
-    font-family:PingFangSC-Regular,PingFang SC;
-    color:rgba(255,255,255,1);
+    font-size: 26rpx;
+    font-family: PingFangSC-Regular,PingFang SC;
+    color: rgba(255, 255, 255, 1);
 }
 
 .add-action-img {
@@ -100,16 +100,19 @@
     overflow: scroll;
 }
 
+.scroll-content {
+    max-height: 369rpx;
+}
+
 .live-text-item {
-    max-width:460rpx;
-    background:rgba(0,0,0,1);
-    border-radius:30rpx;
-    opacity:0.29;
+    max-width: 460rpx;
+    background: rgba(0, 0, 0, 0.29);
+    border-radius: 30rpx;
     box-sizing: border-box;
     padding: 16rpx;
-    font-size:30rpx;
-    font-family:SourceHanSansCN-Normal,SourceHanSansCN;
-    color:rgba(245,185,83,1);
+    font-size: 30rpx;
+    font-family: SourceHanSansCN-Normal,SourceHanSansCN;
+    color: rgba(245, 185, 83, 1);
     margin-bottom: 10rpx;
 }
 
@@ -131,4 +134,12 @@
     height: 84rpx;
     border-radius: 50%;
     overflow: hidden;
+}
+
+
+
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    color: transparent;
 }

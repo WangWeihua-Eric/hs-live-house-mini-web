@@ -1,0 +1,22 @@
+@import '../../../../style/flex-base.wxss'
+
+.card-content {
+    width:656rpx;
+    height:216rpx;
+    background:rgba(244,244,244,1);
+    box-shadow:0rpx 2rpx 2rpx 0rpx rgba(0,0,0,0.04);
+    border-radius:8rpx;
+}
+
+.to-play {
+    width: 98rpx;
+    height: 98rpx;
+}
+
+.play-text {
+    font-size:32rpx;
+    font-family:SourceHanSansCN-Medium,SourceHanSansCN;
+    font-weight:500;
+    color:rgba(201,201,201,1);
+    margin-top: 29rpx;
+}

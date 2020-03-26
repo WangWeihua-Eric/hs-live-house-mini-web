@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/liveHouse/liveHouse",
+    "pages/liveRoomList/liveRoomList",
     "pages/home-page/main",
     "pages/live-player-demo/play",
     "pages/live-pusher-demo/push-config/push-config",

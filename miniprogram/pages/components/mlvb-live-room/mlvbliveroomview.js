@@ -193,6 +193,10 @@ Component({
             this.sendTextMsg(text)
         },
 
+        onSwitchCameraEvent() {
+            this.switchCamera()
+        },
+
         switchCamera() {
             var self = this;
             console.log('切换摄像头: ', self.data.pusherContext)
@@ -226,6 +230,16 @@ Component({
             });
         },
 
+        onCasterStartEvent() {
+            const self = this
+            self.setData({
+                pusherStatus: 3
+            }, function () {
+                //开始推流
+                self.data.pusherContext.start()
+            });
+        },
+
         start() {
             console.info('start() called')
             var self = this;
@@ -248,8 +262,6 @@ Component({
                             console.warn('创建 pusherContext：', self.data.pusherContext);
                             //  直播预备
                             self.data.pusherContext.startPreview()
-                            //开始推流
-                            // self.data.pusherContext.start();
                         });
                     },
                     fail: function (ret) {

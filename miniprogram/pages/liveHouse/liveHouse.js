@@ -229,10 +229,10 @@ Page({
     },
 
     /**
-     * 去直播
+     * 去直播页
      */
     jumpToLive() {
-        const url = '../mlvb-live-room-demo/new-room-page/roomname?page=&type=create&roomName=&userName=' + this.data.userName
+        const url = '../liveRoomList/liveRoomList'
         pageJump(url).then(() => {
         }).catch(() => {
         })

@@ -17,7 +17,7 @@ Component({
     observers: {
         "roomTextList": function(roomTextList) {
             if(roomTextList && roomTextList.length) {
-                const id = `#text-${roomTextList.length - 1}`
+                const id = `text-${roomTextList.length - 1}`
                 this.setData({
                     toIndex: id
                 })
