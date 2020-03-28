@@ -269,6 +269,7 @@ function loginIM(options) {
     var listeners = {
         "onConnNotify": webimhandler.onConnNotify, //选填
         "onBigGroupMsgNotify": function (msg) {
+            // console.log('11223344: ', msg)
             webimhandler.onBigGroupMsgNotify(msg, function (msgs) {
                 receiveMsg(msgs);
             }, function (datas) {
@@ -356,6 +357,7 @@ function receiveMsg(msg) {
     if (!msg.content) {
         return;
     }
+    console.log('22222: ', msg)
     console.log('IM消息: ', JSON.stringify(msg));
     var time = new Date();
     var h = time.getHours() + '', m = time.getMinutes() + '', s = time.getSeconds() + '';
@@ -467,7 +469,7 @@ function recvC2CMsg(msg) {
 
 function notifyPusherChange() {
     var customMsg = {
-        cmd: "notifyPusherChange",
+        cmd: "AudienceLeaveRoom",
         data: {}
     }
     var strCustomMsg = JSON.stringify(customMsg);
@@ -1524,6 +1526,11 @@ function sendC2CCustomMsg(object) {
     });
 }
 
+function sendCustomMsg(object) {
+    const strCustomMsg = JSON.stringify(object);
+    webimhandler.sendCustomMsg({data: strCustomMsg, text: "notify"}, null)
+}
+
 //观众进房时，向后台发送进房通知
 function addAudience(object) {
     request({
@@ -1594,6 +1601,7 @@ module.exports = {
     getAccountInfo: getAccountInfo,
     setVideoRatio: setVideoRatio,
     sendC2CCustomMsg: sendC2CCustomMsg,
+    sendCustomMsg: sendCustomMsg,
     getAnchors: getAnchors
     // addRemoteView: addRemoteView,
     // deleteRemoteView: deleteRemoteView

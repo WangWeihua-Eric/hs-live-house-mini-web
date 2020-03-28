@@ -52,8 +52,8 @@
 			"list": [
 				{
 					"id": 0,
-					"name": "观众端",
-					"pathName": "pages/mlvb-live-room-demo/live-room-page/room",
+					"name": "pages/liveHouse/liveHouse",
+					"pathName": "pages/liveHouse/liveHouse",
 					"query": "",
 					"scene": null
 				},
@@ -73,9 +73,16 @@
 				},
 				{
 					"id": 3,
-					"name": "主播端",
-					"pathName": "pages/mlvb-live-room-demo/live-room-page/room",
+					"name": "观众端入口",
+					"pathName": "pages/audience-room-list/audience-room-list",
 					"query": "type=create&roomName=11&userName=&pureAudio=false",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/liveHouse/liveHouse",
+					"pathName": "pages/liveHouse/liveHouse",
+					"query": "",
 					"scene": null
 				}
 			]

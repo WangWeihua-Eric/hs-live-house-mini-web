@@ -789,6 +789,8 @@ function sendC2CCustomMsg(toUserID, msg, callback) {
     var custom_obj = new webim.Msg.Elem.Custom(data, desc, ext);
     msg.addCustom(custom_obj);
 
+    console.log('111222: ', JSON.stringify(msg))
+
     //调用发送消息接口
     webim.sendMsg(msg, function (resp) {
         webim.Log.info("发自定义消息成功");

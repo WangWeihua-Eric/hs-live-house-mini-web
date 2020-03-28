@@ -76,3 +76,16 @@
     justify-content: space-between;
     align-items: flex-start;
 }
+
+.f-js-as {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.f-js-as-w {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}

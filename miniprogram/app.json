@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/audience-room-list/audience-room-list",
     "pages/liveHouse/liveHouse",
     "pages/caster-login/caster-login",
     "pages/liveRoomList/liveRoomList",

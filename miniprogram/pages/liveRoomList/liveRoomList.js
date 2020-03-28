@@ -1,10 +1,12 @@
 import {LiveRoomListService} from "./service/liveRoomListService";
 import {formatTime} from "../../utils/time-utils/time-utils";
 import {pageJump} from "../../utils/wx-utils/wx-base-utils";
+import {RoomService} from "../../service/roomService";
 
 const liveroom = require('../components/mlvb-live-room/mlvbliveroomcore.js')
 
 const liveRoomListService = new LiveRoomListService()
+const roomService = new RoomService()
 
 Page({
     sessionId: '',
@@ -92,12 +94,16 @@ Page({
      */
     jumpToLive(event) {
         const index = event.currentTarget.dataset.value
-        const roomName = this.data.roomList[index].roomName
-        const accountInfo = liveroom.getAccountInfo()
-        const url = `../mlvb-live-room-demo/live-room-page/room?type=create&roomName=${roomName}&userName=${accountInfo.userName}&pureAudio=false`
-        pageJump(url).then(() => {
-        }).catch(() => {
-        })
+        const liveRoomInfo = this.data.roomList[index]
+        const roomName = liveRoomInfo.roomName
+        const roomId = liveRoomInfo.roomId
+        const userName = liveRoomInfo.anchorName
+        roomService.loginRoom(roomId, userName).then(() => {
+            const url = `../mlvb-live-room-demo/live-room-page/room?type=create&roomName=${roomName}&userName=${userName}&pureAudio=false`
+            pageJump(url).then(() => {
+            }).catch(() => {
+            })
+        }).catch(() => {})
     },
 
     /**

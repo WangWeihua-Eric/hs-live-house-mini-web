@@ -464,7 +464,10 @@ Component({
                         console.error('缺少加速流');
                     }
                     //{ "cmd":"C2CCustomMsg", "data":{ userName: "xxx", userAvatar:"xxx", "roomID":"XXX", "cmd":"xx", msg:"xx" } }
-                    liveroom.sendC2CCustomMsg({cmd: "sketchpad", msg: '{"type":"request", "action":"currentPPT"}'})
+                    // liveroom.sendC2CCustomMsg({cmd: "AudienceEnterRoom", msg: '{"type":"request", "action":"currentPPT"}'})
+
+                    liveroom.sendCustomMsg({cmd: "AudienceEnterRoom", data: {}})
+
                     self.playMixedUrl().then(() => {
                         console.log('playMixedUrl done');
                     }).catch(e => {
