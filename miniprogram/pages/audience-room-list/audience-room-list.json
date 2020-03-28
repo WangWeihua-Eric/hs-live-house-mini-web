@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "红松课表",
+  "navigationStyle": "default",
+  "navigationBarBackgroundColor": "#F6F6F6",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "app-audience-room-card": "./components/audience-room-card/app-audience-room-card",
+    "app-audience-swiper": "./components/audience-swiper/app-audience-swiper"
+  }
+}
