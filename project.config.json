@@ -58,9 +58,9 @@
 					"scene": null
 				},
 				{
-					"id": -1,
-					"name": "pages/liveHouse/liveHouse",
-					"pathName": "pages/liveHouse/liveHouse",
+					"id": 1,
+					"name": "主播登录",
+					"pathName": "pages/caster-login/caster-login",
 					"query": "",
 					"scene": null
 				},

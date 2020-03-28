@@ -12,7 +12,13 @@
                 <slot name="caster"></slot>
             </live-pusher>
             <view class="live-content">
-                <app-pusher-caster roomTextList="{{roomTextList}}" pusherStatus="{{pusherStatus}}" beauty="{{beauty}}" bind:switchCameraEvent="onSwitchCameraEvent" bind:casterStartEvent="onCasterStartEvent" bind:changeBeautyEvent="onChangeBeautyEvent"></app-pusher-caster>
+                <app-pusher-caster roomTextList="{{roomTextList}}" pusherStatus="{{pusherStatus}}" beauty="{{beauty}}"
+                                   requestJoinAnchorList="{{requestJoinAnchorList}}"
+                                   bind:switchCameraEvent="onSwitchCameraEvent"
+                                   bind:casterStartEvent="onCasterStartEvent"
+                                   bind:opLinkEvent="onOpLinkEvent"
+                                   bind:onCloseLinkEvent="onCloseLinkEvent"
+                                   bind:changeBeautyEvent="onChangeBeautyEvent"></app-pusher-caster>
             </view>
         </view>
 
@@ -26,14 +32,14 @@
                 <slot name="audience"></slot>
             </live-player>
             <view class="live-content">
-                <app-player-audience roomTextList="{{roomTextList}}" pusherStatus="{{pusherStatus}}" bind:sendTextMsgEvent="onSendTextMsg"
+                <app-player-audience roomTextList="{{roomTextList}}" pusherStatus="{{pusherStatus}}"
+                                     bind:sendTextMsgEvent="onSendTextMsg"
                                      bind:lintTeacher="onLinkTeacherEvent"></app-player-audience>
             </view>
         </view>
     </view>
 
     <view wx:if="{{linkPusherInfo.url || isCaster}}" class='v-sub-video-list'>
-
         <view class='.v-sub-video' wx:if="{{!isCaster && linkPusherInfo.url}}">
             <live-pusher wx:if="{{!isCaster && linkPusherInfo.url}}" max-bitrate="300" min-bitrate="200"
                          id="audience_pusher" mode="RTC" url="{{linkPusherInfo.url}}" beauty="{{beauty}}"
@@ -47,12 +53,9 @@
             <live-player wx:if="{{item.accelerateURL}}" id="{{item.userID}}" autoplay mode="RTC" object-fit="fillCrop"
                          min-cache="0.1" max-cache="0.3" src="{{item.accelerateURL}}" debug="{{debug}}"
                          background-mute="{{true}}">
-                <cover-view class="close-ico" wx:if="{{item.userID == userID || isCaster}}" bindtap="kickoutJoinAnchor"
-                            data-userid="{{item.userID}}">x
-                </cover-view>
-                <cover-view class='loading' wx:if="{{false}}">
-                    <cover-image src="/pages/Resources/loading_image0.png"></cover-image>
-                </cover-view>
+<!--                <cover-view class="close-ico" wx:if="{{item.userID == userID || isCaster}}" bindtap="kickoutJoinAnchor"-->
+<!--                            data-userid="{{item.userID}}">x-->
+<!--                </cover-view>-->
             </live-player>
         </view>
     </view>

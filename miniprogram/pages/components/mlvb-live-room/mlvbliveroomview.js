@@ -80,7 +80,8 @@ Component({
         statusBarHeight: app.globalData.statusBarHeight,
         quitLinking: false,
         roomTextList: [],
-        pusherStatus: 0 //  0: 主播初始状态，1：直播准备中，2：直播中
+        pusherStatus: 0, //  0: 主播初始状态，1：直播准备中，2：直播中
+        requestJoinAnchorList: []
     },
 
     methods: {
@@ -188,6 +189,26 @@ Component({
             this.onMainPush(ret)
         },
 
+        onMainErrorEvent(event) {
+            const e = event.detail
+            this.onMainError(e)
+        },
+
+        onMainPlayStateEvent(event) {
+            const e = event.detail
+            this.onMainPlayState(e)
+        },
+
+        onLinkPushEvent(event) {
+            const ret = event.detail
+            this.onLinkPush(ret)
+        },
+
+        onLinkErrorEvent(event) {
+            const e = event.detail
+            this.onLinkError(e)
+        },
+
         onSendTextMsgEvent(event) {
             const text = event.detail.text
             this.sendTextMsg(text)
@@ -201,6 +222,12 @@ Component({
             var self = this;
             console.log('切换摄像头: ', self.data.pusherContext)
             self.data.pusherContext && self.data.pusherContext.switchCamera({});
+        },
+
+        onOpLinkEvent(event) {
+            const self = _this
+            const res = event.detail
+            self.respondJoinAnchor(res.agree, res.audience)
         },
 
         respondJoinAnchor(agree, audience) {
@@ -379,13 +406,32 @@ Component({
             })
         },
         onRequestJoinAnchor(pusher) {
-            var self = _this;
-            console.log('onRequestJoinAnchor() called, pusher = ', JSON.stringify(pusher))
-            self.triggerEvent('RoomEvent', {
-                tag: 'requestJoinAnchor',
-                code: 0,
-                detail: pusher
+            const self = _this;
+
+            if(self.data.requestJoinAnchorList.length > 2) {
+                self.respondJoinAnchor(false, pusher)
+                return
+            }
+
+            const userId = pusher.userID
+            const requestJoinAnchorList = self.data.requestJoinAnchorList
+            requestJoinAnchorList.push(pusher)
+            self.setData({
+                requestJoinAnchorList: requestJoinAnchorList
             })
+            setTimeout(() => {
+                const nowRequestJoinAnchorList = self.data.requestJoinAnchorList.filter(item => item.userID !== userId)
+                self.setData({
+                    requestJoinAnchorList: nowRequestJoinAnchorList
+                })
+            }, 9000)
+
+            console.log('onRequestJoinAnchor() called, pusher = ', JSON.stringify(pusher))
+            // self.triggerEvent('RoomEvent', {
+            //     tag: 'requestJoinAnchor',
+            //     code: 0,
+            //     detail: pusher
+            // })
         },
         onKickoutJoinAnchor() {
             console.log('onKickoutJoinAnchor() called')
@@ -713,6 +759,13 @@ Component({
                 detail: "播放错误"
             })
         },
+
+        onKickoutJoinAnchorEvent(event) {
+            const self = _this;
+            const e = event.detail
+            self.kickoutJoinAnchor(e)
+        },
+
         kickoutJoinAnchor(e) {
             console.log('kickoutJoinAnchor() called');
             var self = _this;
@@ -740,6 +793,11 @@ Component({
             })
             //todo
         },
+
+        onQuitLinkEvent() {
+            this.quitLink()
+        },
+
         quitLink() {
             console.log('quitLink() called')
             var self = this;

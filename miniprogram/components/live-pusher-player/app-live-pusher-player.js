@@ -21,7 +21,8 @@ Component({
         headerHeight: {type: Number, value: app.globalData.headerHeight},
         statusBarHeight: {type: Number, value: app.globalData.statusBarHeight},
         roomTextList: {type: Array, value: []},
-        pusherStatus: {type: Number, value: 0}
+        pusherStatus: {type: Number, value: 0},
+        requestJoinAnchorList: {type: Array, value: []}
     },
 
     observers: {
@@ -48,26 +49,29 @@ Component({
             this.triggerEvent('mainPushEvent', event)
         },
 
+        onMainError(event) {
+            this.triggerEvent('mainErrorEvent', event)
+        },
+
+        onLinkPush(event) {
+            this.triggerEvent('linkPushEvent', event)
+        },
+
+        onLinkError(event) {
+            this.triggerEvent('linkErrorEvent', event)
+        },
 
         onLinkTeacherEvent() {
             this.triggerEvent('lintTeacher')
         },
-        onMainPlayState(e) {
-            console.log('===> onMainPlayState: ', e)
-            var self = this;
-            //主播拉流失败不抛错误事件出去
-            if (self.data.isCaster == true) {
-                return;
-            }
-            switch (e.detail.code) {
-                case -2301: {
-                    // 多次拉流失败
-                    console.error('多次拉流失败')
-                    break;
-                }
-
-            }
+        onMainPlayState(event) {
+            this.triggerEvent('statechangeEvent', event)
         },
+
+        onMainPlayError(e) {
+            console.log('===> onMainPlayError: ', e)
+        },
+
         onCasterStartEvent() {
             this.triggerEvent('casterStartEvent')
         },
@@ -79,6 +83,30 @@ Component({
         },
         onSwitchCameraEvent() {
             this.triggerEvent('switchCameraEvent')
+        },
+
+        quitLink() {
+            this.triggerEvent('quitLinkEvent')
+        },
+
+        kickoutJoinAnchor(event) {
+            this.triggerEvent('kickoutJoinAnchorEvent', event)
+        },
+
+        onCloseLinkEvent(event) {
+            const param = {
+                currentTarget: {
+                    dataset: {
+                        userid: event.detail.userID
+                    }
+                }
+            }
+            this.triggerEvent('kickoutJoinAnchorEvent', param)
+        },
+
+        onOpLinkEvent(event) {
+            const params = event.detail
+            this.triggerEvent('opLinkEvent', params)
         }
     }
 })

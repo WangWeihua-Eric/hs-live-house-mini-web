@@ -37,6 +37,10 @@ component_1.VantComponent({
         safeAreaInsetBottom: {
             type: Boolean,
             value: true
+        },
+        bgColor: {
+            type: String,
+            value: '#fff'
         }
     },
     methods: {

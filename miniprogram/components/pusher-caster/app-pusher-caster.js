@@ -8,7 +8,8 @@ Component({
     properties: {
         roomTextList: {type: Array, value: []},
         pusherStatus: {type: Number, value: 1},
-        beauty: {type: Number, value: 5}
+        beauty: {type: Number, value: 5},
+        requestJoinAnchorList: {type: Array, value: []}
     },
 
     /**
@@ -19,7 +20,11 @@ Component({
         readyTime: 3,
         toIndex: '',
         showMessage: true,
-        frontCamera: true
+        frontCamera: true,
+        show: false,
+        bgColor: 'rgba(0,0,0,0.75)',
+        inLink: false,
+        inLinkUser: {}
     },
 
     observers: {
@@ -93,6 +98,43 @@ Component({
                 frontCamera: !frontCamera
             })
             this.triggerEvent('switchCameraEvent')
+        },
+        onCloseSheet() {
+            this.setData({ show: false });
+        },
+
+        onShowSheet() {
+            this.setData({ show: true });
+        },
+        onResolveLinkEvent(event) {
+            const audience = event.currentTarget.dataset.value
+            const params = {
+                agree: true,
+                audience: audience
+            }
+            this.triggerEvent('opLinkEvent', params)
+            this.onCloseSheet()
+            this.setData({
+                inLink: true,
+                inLinkUser: audience
+            })
+        },
+        onRejectLinkEvent(event) {
+            const params = {
+                agree: false,
+                audience: event.currentTarget.dataset.value
+            }
+            this.triggerEvent('opLinkEvent', params)
+        },
+        onCloseLink() {
+            const closeUser = this.data.inLinkUser
+            if (closeUser) {
+                this.triggerEvent('onCloseLinkEvent', closeUser)
+            }
+            this.setData({
+                inLink: false,
+                inLinkUser: {}
+            })
         }
     }
 })

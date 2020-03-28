@@ -232,7 +232,7 @@ Page({
      * 去直播页
      */
     jumpToLive() {
-        const url = '../liveRoomList/liveRoomList'
+        const url = '../caster-login/caster-login'
         pageJump(url).then(() => {
         }).catch(() => {
         })

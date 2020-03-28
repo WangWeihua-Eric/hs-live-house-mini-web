@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/liveHouse/liveHouse",
+    "pages/caster-login/caster-login",
     "pages/liveRoomList/liveRoomList",
     "pages/home-page/main",
     "pages/live-player-demo/play",

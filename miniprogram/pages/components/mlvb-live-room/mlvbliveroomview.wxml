@@ -12,10 +12,18 @@
                         mode="{{mode}}" roomname="{{roomname}}" headerHeight="{{headerHeight}}"
                         statusBarHeight="{{statusBarHeight}}"
                         pusherStatus="{{pusherStatus}}"
+                        requestJoinAnchorList="{{requestJoinAnchorList}}"
                         bind:switchCameraEvent="onSwitchCameraEvent"
                         bind:casterStartEvent="onCasterStartEvent"
                         bind:mainPushEvent="onMainPushEvent"
+                        bind:mainErrorEvent="onMainErrorEvent"
+                        bind:statechangeEvent="onMainPlayStateEvent"
                         bind:sendTextMsgEvent="onSendTextMsgEvent"
+                        bind:linkPushEvent="onLinkPushEvent"
+                        bind:linkErrorEvent="onLinkErrorEvent"
+                        bind:quitLinkEvent="onQuitLinkEvent"
+                        bind:kickoutJoinAnchorEvent="onKickoutJoinAnchorEvent"
+                        bind:opLinkEvent="onOpLinkEvent"
                         bind:lintTeacher="onLinkTeacherEvent"></app-live-pusher-player>
 
 

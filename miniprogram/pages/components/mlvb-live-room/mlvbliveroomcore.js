@@ -135,7 +135,7 @@ function login(options) {
     accountInfo.userSig = options.data.userSig;
     accountInfo.sdkAppID = options.data.sdkAppID;
     accountInfo.userName = options.data.userName || userName[Math.floor(Math.random() * 10)] || accountInfo.userID;
-    accountInfo.userAvatar = options.data.userAvatar || '123';
+    accountInfo.userAvatar = options.data.userAvatar || '../../images/test2.png';
 
     request({
         url: 'login',

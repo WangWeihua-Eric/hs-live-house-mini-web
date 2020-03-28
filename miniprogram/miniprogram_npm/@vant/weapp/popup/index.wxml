@@ -11,7 +11,7 @@
 <view
   wx:if="{{ inited }}"
   class="custom-class {{ classes }} {{ utils.bem('popup', [position, { round, safe: safeAreaInsetBottom, safeTop: safeAreaInsetTop }]) }}"
-  style="z-index: {{ zIndex }}; -webkit-transition-duration:{{ currentDuration }}ms; transition-duration:{{ currentDuration }}ms; {{ display ? '' : 'display: none;' }};{{ customStyle }}"
+  style="z-index: {{ zIndex }}; background-color:{{bgColor}}; -webkit-transition-duration:{{ currentDuration }}ms; transition-duration:{{ currentDuration }}ms; {{ display ? '' : 'display: none;' }};{{ customStyle }}"
   bind:transitionend="onTransitionEnd"
 >
   <slot />

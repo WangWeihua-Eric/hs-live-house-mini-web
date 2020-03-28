@@ -1,20 +1,41 @@
-// pages/liveRoomList/liveRoomList.js
+import {LiveRoomListService} from "./service/liveRoomListService";
+import {formatTime} from "../../utils/time-utils/time-utils";
 import {pageJump} from "../../utils/wx-utils/wx-base-utils";
 
 const liveroom = require('../components/mlvb-live-room/mlvbliveroomcore.js')
 
+const liveRoomListService = new LiveRoomListService()
+
 Page({
+    sessionId: '',
 
     /**
      * 页面的初始数据
      */
-    data: {},
+    data: {
+        roomList: []
+    },
+
+    refresh() {
+        if (this.sessionId) {
+            liveRoomListService.queryRoomList(this.sessionId).then(roomList => {
+                console.log(roomList)
+                this.formatRoomList(roomList)
+                this.setData({
+                    roomList: roomList
+                })
+            }).catch(() => {
+            })
+        }
+    },
 
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-
+        const sessionId = options.sessionId
+        this.sessionId = sessionId
+        this.refresh()
     },
 
     /**
@@ -69,11 +90,23 @@ Page({
     /**
      * 去直播
      */
-    jumpToLive() {
+    jumpToLive(event) {
+        const index = event.currentTarget.dataset.value
+        const roomName = this.data.roomList[index].roomName
         const accountInfo = liveroom.getAccountInfo()
-        const url = '../mlvb-live-room-demo/new-room-page/roomname?page=&type=create&roomName=&userName=' + accountInfo.userName
+        const url = `../mlvb-live-room-demo/live-room-page/room?type=create&roomName=${roomName}&userName=${accountInfo.userName}&pureAudio=false`
         pageJump(url).then(() => {
         }).catch(() => {
+        })
+    },
+
+    /**
+     * 格式化房间信息
+     */
+    formatRoomList(roomList) {
+        roomList.forEach(item => {
+            const startTime = item.startTime
+            item.openRoomTime = formatTime(startTime)
         })
     }
 })

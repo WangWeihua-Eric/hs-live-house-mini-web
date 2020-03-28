@@ -1,5 +1,5 @@
 <view class="content">
-    <view bindtap="jumpToLive">
-        <app-live-room-item-card></app-live-room-item-card>
+    <view wx:for="{{roomList}}" wx:for-item="item" wx:for-index="index" wx:key="index" bindtap="jumpToLive" data-value="{{index}}">
+        <app-live-room-item-card roomData="{{item}}"></app-live-room-item-card>
     </view>
 </view>

@@ -14,20 +14,17 @@
 }
 
 .v-sub-video {
-    position: relative;
-    display: inline-block;
-    width: 30.65vw;
-    height: calc(123.07vw / 3);
-    margin-top: 2vw;
+    width: 260rpx;
+    height: 330rpx;
 }
 
 .v-sub-video-list {
     position: absolute;
     display: flex;
-    width: 30.65vw;
-    height: 123.07vw + 6vw;
-    right: 0;
-    bottom: 20vw;
+    width: 260rpx;
+    height: 330rpx;
+    right: 20rpx;
+    top: 192rpx;
     overflow: hidden;
     flex-direction: column-reverse;
 }
