@@ -1,4 +1,12 @@
+import {getSetting, getUserInfo} from "../../../utils/wx-utils/wx-base-utils";
+import {login} from "../../../utils/wx-utils/wx-cloud-utils";
+
+const liveroom = require('../../components/mlvb-live-room/mlvbliveroomcore.js')
+const GenerateTestUserSig = require("../../mlvb-live-room-demo/debug/GenerateTestUserSig.js")
+
 const app = getApp()
+let loadOptions = {}
+let openId = ''
 
 Page({
     component: null,
@@ -22,36 +30,109 @@ Page({
         phoneNum: '',
         headerHeight: app.globalData.headerHeight,
         statusBarHeight: app.globalData.statusBarHeight,
-        inputFocus: false
+        inputFocus: false,
+        scopeUserInfo: true
+    },
+
+    refresh(options) {
+        getUserInfo().then(userInfo => {
+            console.log('userInfo: ', userInfo)
+            if (userInfo && userInfo.userInfo) {
+                const userData = userInfo.userInfo
+                const userId = openId
+                const userName = userData.nickName
+                const userAvatar = userData.avatarUrl
+
+                wx.showLoading({
+                    title: '登录信息获取中',
+                })
+
+                const userSig = GenerateTestUserSig.genTestUserSig(userId)
+
+                const loginInfo = {
+                    sdkAppID: userSig.sdkAppID,
+                    userID: userId,
+                    userSig: userSig.userSig,
+                    userName: userName,
+                    userAvatar: userAvatar
+                }
+
+                //MLVB 登录
+                liveroom.login({
+                    data: loginInfo,
+                    success: () => {
+                        //登录成功
+                        wx.hideLoading()
+
+                        const role = options.type == 'create' ? 'anchor' : 'audience';
+
+                        if (role == 'audience') {
+                            this.setData({
+                                roomID: options.roomID,
+                                roomName: options.roomName,
+                                userName: options.userName,
+                                role: role,
+                                showLiveRoom: true
+                            }, function () {
+                                this.start();
+                            })
+                        } else {
+                            this.setData({
+                                roomName: options.roomName,
+                                userName: options.userName,
+                                pureAudio: JSON.parse(options.pureAudio),
+                                role: role,
+                                showLiveRoom: true
+                            }, function () {
+                                this.start();
+                            })
+                        }
+
+                    },
+                    fail: (ret) => {
+                        //登录失败
+                        wx.hideLoading()
+                        wx.showModal({
+                            title: '提示',
+                            content: ret.errMsg,
+                            showCancel: false,
+                            complete: () => {}
+                        })
+                    }
+                })
+            }
+        }).catch(() => {})
     },
 
     onLoad: function (options) {
-        var self = this;
-        console.log("--> onLoad: ", options)
-        var role = options.type == 'create' ? 'anchor' : 'audience';
+        loadOptions = options
+        login().then(res => {
+            if (res && res.result && res.result.openid) {
+                openId = res.result.openid
 
-        if (role == 'audience') {
-            self.setData({
-                roomID: options.roomID,
-                roomName: options.roomName,
-                userName: options.userName,
-                role: role,
-                showLiveRoom: true
-            }, function () {
-                self.start();
-            })
-        } else {
-            self.setData({
-                roomName: options.roomName,
-                userName: options.userName,
-                pureAudio: JSON.parse(options.pureAudio),
-                role: role,
-                showLiveRoom: true
-            }, function () {
-                console.log('======> page data: ', self.data)
-                self.start();
-            })
-        }
+                getSetting('scope.userInfo').then(scopeRes => {
+                    if (scopeRes) {
+                        //  已授权
+                        this.setData({
+                            scopeUserInfo: true
+                        })
+                        this.refresh(options)
+                    } else {
+                        //  未授权
+                        this.setData({
+                            scopeUserInfo: false
+                        })
+                    }
+                }).catch(err => {
+                    //  接口出错当未授权处理
+                    this.setData({
+                        scopeUserInfo: false
+                    })
+                })
+            }
+        }).catch(() => {
+
+        })
     },
 
     onReady: function () {
@@ -313,4 +394,26 @@ Page({
             delta: 1
         });
     },
+
+    onClickGetUserInfo() {
+        getSetting('scope.userInfo').then(scopeRes => {
+            if (scopeRes) {
+                //  已授权
+                this.setData({
+                    scopeUserInfo: true
+                })
+                this.refresh(loadOptions)
+            } else {
+                //  未授权
+                this.setData({
+                    scopeUserInfo: false
+                })
+            }
+        }).catch(err => {
+            //  接口出错当未授权处理
+            this.setData({
+                scopeUserInfo: false
+            })
+        })
+    }
 })

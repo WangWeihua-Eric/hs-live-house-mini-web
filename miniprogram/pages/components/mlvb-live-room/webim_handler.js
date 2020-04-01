@@ -1,16 +1,16 @@
-
 var webim = require('./webim_wx');
 var selToID
-    ,loginInfo
-    ,accountMode
-    ,accountType
-    ,sdkAppID
-    ,avChatRoomId
-    ,selType
-    ,selToID
-    ,selSess
-    ,selSessHeadUrl
-    ;
+    , loginInfo
+    , accountMode
+    , accountType
+    , sdkAppID
+    , avChatRoomId
+    , selType
+    , selToID
+    , selSess
+    , selSessHeadUrl
+;
+
 //监听大群新消息（普通，点赞，提示，红包）
 function onBigGroupMsgNotify(msgList, textMessageCallback, sketchpadDataCallback) {
     for (var i = msgList.length - 1; i >= 0; i--) {//遍历消息，按照时间从后往前
@@ -128,18 +128,21 @@ function handlderMsg(msg, callback) {
 //sdk登录
 function sdkLogin(userInfo, listeners, options, avChatRoomId, callback, callbackOptions) {
     //web sdk 登录
+    console.log('111userInfo: ', userInfo)
     webim.login(userInfo, listeners, options,
         function (identifierNick) {
+            // console.log('identifierNic11: ', callbackOptions)
             //identifierNick为登录用户昵称(没有设置时，为帐号)，无登录态时为空
             webim.Log.info('webim登录成功');
+            userInfo.identifierNick = callbackOptions.userName
             loginInfo = userInfo;
             setProfilePortrait({
                 'ProfileItem': [{
                     "Tag": "Tag_Profile_IM_Nick",
                     "Value": userInfo.identifierNick
                 }]
-            },function(ret){
-                if(ret) {
+            }, function (ret) {
+                if (ret) {
                     // 设置昵称失败
                     callback & callback({
                         errCode: ret.ErrorCode,
@@ -148,7 +151,7 @@ function sdkLogin(userInfo, listeners, options, avChatRoomId, callback, callback
                     });
                     return;
                 }
-                if(avChatRoomId) 
+                if (avChatRoomId)
                     applyJoinBigGroup(avChatRoomId);//加入大群
                 callback & callback({
                     errCode: 0,
@@ -163,7 +166,7 @@ function sdkLogin(userInfo, listeners, options, avChatRoomId, callback, callback
             console.error(err.ErrorInfo);
             console.log('webim登录失败');
             callback & callback({
-                errCode: err, 
+                errCode: err,
                 errMsg: err.ErrorInfo,
                 callback: callbackOptions
             });
@@ -172,14 +175,14 @@ function sdkLogin(userInfo, listeners, options, avChatRoomId, callback, callback
 }
 
 //修改昵称
-function setProfilePortrait(options,callback){
+function setProfilePortrait(options, callback) {
     webim.setProfilePortrait(options,
-        function(res){
+        function (res) {
             webim.Log.info('修改昵称成功');
             callback && callback();
         },
-        function(ret){
-            console.log('修改昵称失败',ret);
+        function (ret) {
+            console.log('修改昵称失败', ret);
             callback && callback(ret);
         }
     );
@@ -187,7 +190,7 @@ function setProfilePortrait(options,callback){
 
 // 创建大群
 function createBigGroup(options, callback, callbackOptions) {
-  avChatRoomId = options.roomID;
+    avChatRoomId = options.roomID;
     webim.createGroup({
         GroupId: options.roomID,
         Owner_Account: options.userID,
@@ -196,8 +199,8 @@ function createBigGroup(options, callback, callbackOptions) {
         MaxMemberCount: 500,
         ApplyJoinOption: 'FreeAccess',
         MemberList: []
-    },function(ret){
-        if(ret.ErrorCode) {
+    }, function (ret) {
+        if (ret.ErrorCode) {
             // 建房失败
             callback && callback({
                 errCode: ret.ErrorCode,
@@ -212,15 +215,15 @@ function createBigGroup(options, callback, callbackOptions) {
             errCode: 0,
             callback: callbackOptions
         });
-    },function(ret){
+    }, function (ret) {
         if (ret && ret.ErrorCode == 10025) {
-          //群组 ID 已被使用，并且操作者为群主，可以直接使用
-          // 建房成功
-          callback && callback({
-            errCode: 0,
-            callback: callbackOptions
-          });
-          return;
+            //群组 ID 已被使用，并且操作者为群主，可以直接使用
+            // 建房成功
+            callback && callback({
+                errCode: 0,
+                callback: callbackOptions
+            });
+            return;
         }
         // 建房失败
         callback && callback({
@@ -316,8 +319,8 @@ function showMsg(msg) {
     }
 
     return {
-        fromAccountNick : fromAccountNick,
-        content : content
+        fromAccountNick: fromAccountNick,
+        content: content
     }
 }
 
@@ -366,6 +369,7 @@ function convertMsgtoHtml(msg) {
 function convertTextMsgToHtml(content) {
     return content.getText();
 }
+
 //解析表情消息元素
 function convertFaceMsgToHtml(content) {
     return content.getData();
@@ -384,6 +388,7 @@ function convertFaceMsgToHtml(content) {
         return data;
     }
 }
+
 //解析图片消息元素
 function convertImageMsgToHtml(content) {
     var smallImage = content.getImage(webim.IMAGE_TYPE.SMALL);//小图
@@ -397,6 +402,7 @@ function convertImageMsgToHtml(content) {
     }
     return "<img src='" + smallImage.getUrl() + "#" + bigImage.getUrl() + "#" + oriImage.getUrl() + "' style='CURSOR: hand' id='" + content.getImageId() + "' bigImgUrl='" + bigImage.getUrl() + "' onclick='imageClick(this)' />";
 }
+
 //解析语音消息元素
 function convertSoundMsgToHtml(content) {
     var second = content.getSecond();//获取语音时长
@@ -406,16 +412,19 @@ function convertSoundMsgToHtml(content) {
     }
     return '<audio src="' + downUrl + '" controls="controls" onplay="onChangePlayAudio(this)" preload="none"></audio>';
 }
+
 //解析文件消息元素
 function convertFileMsgToHtml(content) {
     var fileSize = Math.round(content.getSize() / 1024);
     return '<a href="' + content.getDownUrl() + '" title="点击下载文件" ><i class="glyphicon glyphicon-file">&nbsp;' + content.getName() + '(' + fileSize + 'KB)</i></a>';
 
 }
+
 //解析位置消息元素
 function convertLocationMsgToHtml(content) {
     return '经度=' + content.getLongitude() + ',纬度=' + content.getLatitude() + ',描述=' + content.getDesc();
 }
+
 //解析自定义消息元素
 function convertCustomMsgToHtml(content) {
     var data = content.getData();
@@ -424,6 +433,7 @@ function convertCustomMsgToHtml(content) {
     // return "data=" + data + ", desc=" + desc + ", ext=" + ext;
     return data;
 }
+
 //解析群提示消息元素
 function convertGroupTipMsgToHtml(content) {
     var WEB_IM_GROUP_TIP_MAX_USER_COUNT = 10;
@@ -566,6 +576,7 @@ function tlsLogin() {
     //     url: window.location.href
     // });
 }
+
 //第三方应用需要实现这个函数，并在这里拿到UserSig
 function tlsGetUserSig(res) {
     //成功拿到凭证
@@ -582,7 +593,7 @@ function tlsGetUserSig(res) {
             loginInfo.accountType = accountType;
             sdkLogin();//sdk登录
         } else {
-            location.href = location.href.replace(/\?.*$/gi,"");
+            location.href = location.href.replace(/\?.*$/gi, "");
         }
     } else {
         //签名过期，需要重新登录
@@ -639,8 +650,8 @@ function smsPicClick() {
 }
 
 //发送消息(普通消息)
-function onSendMsg(msg,callback) {
-    console.log('accountMode',accountMode);
+function onSendMsg(msg, callback) {
+    console.log('accountMode', accountMode);
     if (!loginInfo.identifier) {//未登录
         if (accountMode == 1) {//托管模式
             //将account_type保存到cookie中,有效期是1天
@@ -652,7 +663,7 @@ function onSendMsg(msg,callback) {
         }
         return;
     }
-    
+
     if (!selToID) {
         console.error("您还没有进入房间，暂不能聊天");
         return;
@@ -761,18 +772,18 @@ function sendC2CCustomMsg(toUserID, msg, callback) {
             console.error('请填写帐号和票据');
         }
         return;
-    } 
+    }
 
-   // custom消息
-   var data = msg.data || '';
-   var desc = msg.desc || '';
-   var ext = msg.ext || '';
+    // custom消息
+    var data = msg.data || '';
+    var desc = msg.desc || '';
+    var ext = msg.ext || '';
 
-   var msgLen = webim.Tool.getStrBytes(data); 
+    var msgLen = webim.Tool.getStrBytes(data);
 
-   var maxLen = webim.MSG_MAX_LENGTH.C2C;
-   var errInfo = "消息长度超出限制(最多" + Math.round(maxLen / 3) + "汉字)";
-   if (msgLen > maxLen) {
+    var maxLen = webim.MSG_MAX_LENGTH.C2C;
+    var errInfo = "消息长度超出限制(最多" + Math.round(maxLen / 3) + "汉字)";
+    if (msgLen > maxLen) {
         alert(errInfo);
         return;
     }
@@ -783,7 +794,7 @@ function sendC2CCustomMsg(toUserID, msg, callback) {
     var random = Math.round(Math.random() * 4294967296);//消息随机数，用于去重
     var msgTime = Math.round(new Date().getTime() / 1000);//消息时间戳
     var subType = webim.C2C_MSG_SUB_TYPE.COMMON;//消息子类型 
-    
+
     var msg = new webim.Msg(session, isSend, seq, random, msgTime, loginInfo.identifier, subType, loginInfo.identifierNick);
 
     var custom_obj = new webim.Msg.Elem.Custom(data, desc, ext);
@@ -814,7 +825,7 @@ function sendC2CCustomMsg(toUserID, msg, callback) {
  * 一条custom消息+一条text消息
  * 自定义，用于携带头像与昵称（其他端使用精简版text不能携带）
  */
-function sendCustomMsg(msg,callback) {
+function sendCustomMsg(msg, callback) {
 
     if (!loginInfo.identifier) {//未登录
         if (accountMode == 1) {//托管模式
@@ -832,7 +843,7 @@ function sendCustomMsg(msg,callback) {
         console.error("您还没有进入房间，暂不能聊天");
         return;
     }
-    
+
     // custom消息
     var data = msg.data || '';
     var desc = msg.desc || '';
@@ -900,8 +911,10 @@ function sendCustomMsg(msg,callback) {
         //webim.C2C_MSG_SUB_TYPE.COMMON-普通消息,
         subType = webim.C2C_MSG_SUB_TYPE.COMMON;
     }
+
+    console.log('11122333444: ', loginInfo)
     var msg = new webim.Msg(selSess, isSend, seq, random, msgTime, loginInfo.identifier, subType, loginInfo.identifierNick);
-    
+
     var custom_obj = new webim.Msg.Elem.Custom(data, desc, ext);
     msg.addCustom(custom_obj);
 
@@ -938,7 +951,7 @@ function sendCustomMsg(msg,callback) {
     }
     //调用发送消息接口
     webim.sendMsg(msg, function (resp) {
-        if(selType==webim.SESSION_TYPE.C2C){//私聊时，在聊天窗口手动添加一条发的消息，群聊时，长轮询接口会返回自己发的消息
+        if (selType == webim.SESSION_TYPE.C2C) {//私聊时，在聊天窗口手动添加一条发的消息，群聊时，长轮询接口会返回自己发的消息
             addMsg(msg);
         }
         webim.Log.info("发自定义消息成功");
@@ -946,7 +959,7 @@ function sendCustomMsg(msg,callback) {
         callback && callback();
     }, function (err) {
         webim.Log.info(err.ErrorInfo);
-        console.log('发自定义消息失败:',err);
+        console.log('发自定义消息失败:', err);
     });
 }
 
@@ -999,33 +1012,40 @@ function sendGroupLoveMsg() {
         console.error("发送点赞消息失败:" + err.ErrorInfo);
     });
 }
+
 //隐藏评论文本框
 function hideDiscussForm() {
     //$(".video-discuss-form").hide();
 }
+
 //显示评论文本框
 function showDiscussForm() {
     //$(".video-discuss-form").show();
 }
+
 //隐藏评论工具栏
 function hideDiscussTool() {
     //$(".video-discuss-tool").hide();
 }
+
 //显示评论工具栏
 function showDiscussTool() {
     //$(".video-discuss-tool").show();
 }
+
 //隐藏表情框
 function hideDiscussEmotion() {
     //$(".video-discuss-emotion").hide();
     ////$(".video-discuss-emotion").fadeOut("slow");
 }
+
 //显示表情框
 function showDiscussEmotion() {
     //$(".video-discuss-emotion").show();
     //$(".video-discuss-emotion").fadeIn("slow");
 
 }
+
 //展示点赞动画
 function showLoveMsgAnimation() {
     //点赞数加1
@@ -1067,6 +1087,7 @@ function showEmotionDialog() {
         showDiscussEmotion();//打开
     }
 }
+
 //选中表情
 function selectEmotionImg(selImg) {
     $("#send_msg_text").val($("#send_msg_text").val() + selImg.id);
@@ -1080,11 +1101,11 @@ function destroyGroup() {
     };
     webim.destroyGroup(
         options,
-        function(ret){
+        function (ret) {
             webim.Log.info('解散群成功');
             selSess = null;
         }
-    ); 
+    );
 }
 
 
@@ -1116,7 +1137,7 @@ function logout() {
         function (resp) {
             webim.Log.info('登出成功');
             console.log('IM登出成功');
-            if(loginInfo) {
+            if (loginInfo) {
                 loginInfo.identifier = null;
                 loginInfo.userSig = null;
             }
@@ -1124,7 +1145,6 @@ function logout() {
         }
     );
 }
-
 
 
 //监听 申请加群 系统消息
@@ -1143,6 +1163,7 @@ function onApplyJoinGroupAcceptNotify(notify) {
     var content = notify.Operator_Account + "同意你的加群申请，附言：" + notify.RemarkInfo;
     showGroupSystemMsg(notify.ReportType, reportTypeCh, notify.GroupId, notify.GroupName, content, notify.MsgTime);
 }
+
 //监听 申请加群被拒绝 系统消息
 function onApplyJoinGroupRefuseNotify(notify) {
     webim.Log.warn("执行 申请加群被拒绝 回调：" + JSON.stringify(notify));
@@ -1150,6 +1171,7 @@ function onApplyJoinGroupRefuseNotify(notify) {
     var content = notify.Operator_Account + "拒绝了你的加群申请，附言：" + notify.RemarkInfo;
     showGroupSystemMsg(notify.ReportType, reportTypeCh, notify.GroupId, notify.GroupName, content, notify.MsgTime);
 }
+
 //监听 被踢出群 系统消息
 function onKickedGroupNotify(notify) {
     webim.Log.warn("执行 被踢出群  回调：" + JSON.stringify(notify));
@@ -1157,6 +1179,7 @@ function onKickedGroupNotify(notify) {
     var content = "你被管理员" + notify.Operator_Account + "踢出该群";
     showGroupSystemMsg(notify.ReportType, reportTypeCh, notify.GroupId, notify.GroupName, content, notify.MsgTime);
 }
+
 //监听 解散群 系统消息
 function onDestoryGroupNotify(notify) {
     webim.Log.warn("执行 解散群 回调：" + JSON.stringify(notify));
@@ -1164,6 +1187,7 @@ function onDestoryGroupNotify(notify) {
     var content = "群主" + notify.Operator_Account + "已解散该群";
     showGroupSystemMsg(notify.ReportType, reportTypeCh, notify.GroupId, notify.GroupName, content, notify.MsgTime);
 }
+
 //监听 创建群 系统消息
 function onCreateGroupNotify(notify) {
     webim.Log.warn("执行 创建群 回调：" + JSON.stringify(notify));
@@ -1171,6 +1195,7 @@ function onCreateGroupNotify(notify) {
     var content = "你创建了该群";
     showGroupSystemMsg(notify.ReportType, reportTypeCh, notify.GroupId, notify.GroupName, content, notify.MsgTime);
 }
+
 //监听 被邀请加群 系统消息
 function onInvitedJoinGroupNotify(notify) {
     webim.Log.warn("执行 被邀请加群  回调: " + JSON.stringify(notify));
@@ -1178,6 +1203,7 @@ function onInvitedJoinGroupNotify(notify) {
     var content = "你被管理员" + notify.Operator_Account + "邀请加入该群";
     showGroupSystemMsg(notify.ReportType, reportTypeCh, notify.GroupId, notify.GroupName, content, notify.MsgTime);
 }
+
 //监听 主动退群 系统消息
 function onQuitGroupNotify(notify) {
     webim.Log.warn("执行 主动退群  回调： " + JSON.stringify(notify));
@@ -1185,6 +1211,7 @@ function onQuitGroupNotify(notify) {
     var content = "你退出了该群";
     showGroupSystemMsg(notify.ReportType, reportTypeCh, notify.GroupId, notify.GroupName, content, notify.MsgTime);
 }
+
 //监听 被设置为管理员 系统消息
 function onSetedGroupAdminNotify(notify) {
     webim.Log.warn("执行 被设置为管理员  回调：" + JSON.stringify(notify));
@@ -1192,6 +1219,7 @@ function onSetedGroupAdminNotify(notify) {
     var content = "你被群主" + notify.Operator_Account + "设置为管理员";
     showGroupSystemMsg(notify.ReportType, reportTypeCh, notify.GroupId, notify.GroupName, content, notify.MsgTime);
 }
+
 //监听 被取消管理员 系统消息
 function onCanceledGroupAdminNotify(notify) {
     webim.Log.warn("执行 被取消管理员 回调：" + JSON.stringify(notify));
@@ -1199,6 +1227,7 @@ function onCanceledGroupAdminNotify(notify) {
     var content = "你被群主" + notify.Operator_Account + "取消了管理员资格";
     showGroupSystemMsg(notify.ReportType, reportTypeCh, notify.GroupId, notify.GroupName, content, notify.MsgTime);
 }
+
 //监听 群被回收 系统消息
 function onRevokeGroupNotify(notify) {
     webim.Log.warn("执行 群被回收 回调：" + JSON.stringify(notify));
@@ -1206,6 +1235,7 @@ function onRevokeGroupNotify(notify) {
     var content = "该群已被回收";
     showGroupSystemMsg(notify.ReportType, reportTypeCh, notify.GroupId, notify.GroupName, content, notify.MsgTime);
 }
+
 //监听 用户自定义 群系统消息
 function onCustomGroupNotify(notify) {
     webim.Log.warn("执行 用户自定义系统消息 回调：" + JSON.stringify(notify));
@@ -1238,7 +1268,7 @@ function showGroupSystemMsg(type, typeCh, group_id, group_name, msg_content, msg
     console.error(sysMsgStr);
 }
 
-function init(opts){
+function init(opts) {
     accountMode = opts.accountMode;
     accountType = opts.accountType;
     sdkAppID = opts.sdkAppID;
@@ -1248,57 +1278,57 @@ function init(opts){
 }
 
 module.exports = {
-    init : init,
-    onBigGroupMsgNotify : onBigGroupMsgNotify,
-    onMsgNotify : onMsgNotify,
-    handlderMsg : handlderMsg,
-    sdkLogin : sdkLogin,
-    createBigGroup : createBigGroup,
-    applyJoinBigGroup : applyJoinBigGroup,
-    showMsg : showMsg,
-    convertMsgtoHtml : convertMsgtoHtml,
-    convertTextMsgToHtml : convertTextMsgToHtml,
-    convertFaceMsgToHtml : convertFaceMsgToHtml,
-    convertImageMsgToHtml : convertImageMsgToHtml,
-    convertSoundMsgToHtml : convertSoundMsgToHtml,
-    convertFileMsgToHtml : convertFileMsgToHtml,
-    convertLocationMsgToHtml : convertLocationMsgToHtml,
-    convertCustomMsgToHtml : convertCustomMsgToHtml,
-    convertGroupTipMsgToHtml : convertGroupTipMsgToHtml,
-    tlsLogin : tlsLogin,
-    tlsGetUserSig : tlsGetUserSig,
-    imageClick : imageClick,
-    onChangePlayAudio : onChangePlayAudio,
-    smsPicClick : smsPicClick,
-    onSendMsg : onSendMsg,
-    sendCustomMsg : sendCustomMsg,
-    sendC2CCustomMsg : sendC2CCustomMsg,
-    sendGroupLoveMsg : sendGroupLoveMsg,
-    hideDiscussForm : hideDiscussForm,
-    showDiscussForm : showDiscussForm,
-    hideDiscussTool : hideDiscussTool,
-    showDiscussTool : showDiscussTool,
-    hideDiscussEmotion : hideDiscussEmotion,
-    showDiscussEmotion : showDiscussEmotion,
-    showLoveMsgAnimation : showLoveMsgAnimation,
-    initEmotionUL : initEmotionUL,
-    showEmotionDialog : showEmotionDialog,
-    selectEmotionImg : selectEmotionImg,
-    quitBigGroup : quitBigGroup,
-    destroyGroup : destroyGroup,
-    logout : logout,
-    onApplyJoinGroupRequestNotify : onApplyJoinGroupRequestNotify,
-    onApplyJoinGroupAcceptNotify : onApplyJoinGroupAcceptNotify,
-    onApplyJoinGroupRefuseNotify : onApplyJoinGroupRefuseNotify,
-    onKickedGroupNotify : onKickedGroupNotify,
-    onDestoryGroupNotify : onDestoryGroupNotify,
-    onCreateGroupNotify : onCreateGroupNotify,
-    onInvitedJoinGroupNotify : onInvitedJoinGroupNotify,
-    onQuitGroupNotify : onQuitGroupNotify,
-    onSetedGroupAdminNotify : onSetedGroupAdminNotify,
-    onCanceledGroupAdminNotify : onCanceledGroupAdminNotify,
-    onRevokeGroupNotify : onRevokeGroupNotify,
-    onCustomGroupNotify : onCustomGroupNotify,
-    onGroupInfoChangeNotify : onGroupInfoChangeNotify,
-    showGroupSystemMsg : showGroupSystemMsg
+    init: init,
+    onBigGroupMsgNotify: onBigGroupMsgNotify,
+    onMsgNotify: onMsgNotify,
+    handlderMsg: handlderMsg,
+    sdkLogin: sdkLogin,
+    createBigGroup: createBigGroup,
+    applyJoinBigGroup: applyJoinBigGroup,
+    showMsg: showMsg,
+    convertMsgtoHtml: convertMsgtoHtml,
+    convertTextMsgToHtml: convertTextMsgToHtml,
+    convertFaceMsgToHtml: convertFaceMsgToHtml,
+    convertImageMsgToHtml: convertImageMsgToHtml,
+    convertSoundMsgToHtml: convertSoundMsgToHtml,
+    convertFileMsgToHtml: convertFileMsgToHtml,
+    convertLocationMsgToHtml: convertLocationMsgToHtml,
+    convertCustomMsgToHtml: convertCustomMsgToHtml,
+    convertGroupTipMsgToHtml: convertGroupTipMsgToHtml,
+    tlsLogin: tlsLogin,
+    tlsGetUserSig: tlsGetUserSig,
+    imageClick: imageClick,
+    onChangePlayAudio: onChangePlayAudio,
+    smsPicClick: smsPicClick,
+    onSendMsg: onSendMsg,
+    sendCustomMsg: sendCustomMsg,
+    sendC2CCustomMsg: sendC2CCustomMsg,
+    sendGroupLoveMsg: sendGroupLoveMsg,
+    hideDiscussForm: hideDiscussForm,
+    showDiscussForm: showDiscussForm,
+    hideDiscussTool: hideDiscussTool,
+    showDiscussTool: showDiscussTool,
+    hideDiscussEmotion: hideDiscussEmotion,
+    showDiscussEmotion: showDiscussEmotion,
+    showLoveMsgAnimation: showLoveMsgAnimation,
+    initEmotionUL: initEmotionUL,
+    showEmotionDialog: showEmotionDialog,
+    selectEmotionImg: selectEmotionImg,
+    quitBigGroup: quitBigGroup,
+    destroyGroup: destroyGroup,
+    logout: logout,
+    onApplyJoinGroupRequestNotify: onApplyJoinGroupRequestNotify,
+    onApplyJoinGroupAcceptNotify: onApplyJoinGroupAcceptNotify,
+    onApplyJoinGroupRefuseNotify: onApplyJoinGroupRefuseNotify,
+    onKickedGroupNotify: onKickedGroupNotify,
+    onDestoryGroupNotify: onDestoryGroupNotify,
+    onCreateGroupNotify: onCreateGroupNotify,
+    onInvitedJoinGroupNotify: onInvitedJoinGroupNotify,
+    onQuitGroupNotify: onQuitGroupNotify,
+    onSetedGroupAdminNotify: onSetedGroupAdminNotify,
+    onCanceledGroupAdminNotify: onCanceledGroupAdminNotify,
+    onRevokeGroupNotify: onRevokeGroupNotify,
+    onCustomGroupNotify: onCustomGroupNotify,
+    onGroupInfoChangeNotify: onGroupInfoChangeNotify,
+    showGroupSystemMsg: showGroupSystemMsg
 };

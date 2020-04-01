@@ -1,5 +1,14 @@
 <view class='container-box'>
-    <mlvb-live-room id="id_liveroom" wx:if="{{showLiveRoom}}" roomid="{{roomID}}" role="{{role}}"
+    <view wx:if="{{!scopeUserInfo}}" class="get-user-info-content f-c-jc-ac">
+        <view>您还没有授权。请点击下方按钮授权观看</view>
+        <button></button>
+
+        <button open-type="getUserInfo" bindgetuserinfo="onClickGetUserInfo">
+            点击观看
+        </button>
+    </view>
+
+    <mlvb-live-room wx:if="{{scopeUserInfo}}" id="id_liveroom" wx:if="{{showLiveRoom}}" roomid="{{roomID}}" role="{{role}}"
                     roomname="{{roomName}}" pureaudio="{{pureAudio}}" debug="{{debug}}" muted="{{muted}}"
                     beauty="{{beauty}}" template="float" bindRoomEvent="onRoomEvent">
 

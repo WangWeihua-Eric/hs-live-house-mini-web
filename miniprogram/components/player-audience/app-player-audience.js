@@ -1,3 +1,7 @@
+const webimhandler = require('../../pages/components/mlvb-live-room/webim_handler');
+
+let inRoomImg = []
+
 Component({
     component: null,
 
@@ -21,6 +25,32 @@ Component({
                 this.setData({
                     toIndex: id
                 })
+
+                const lastRoomTextInfo = roomTextList[roomTextList.length - 1]
+                switch (lastRoomTextInfo.type) {
+                    case 'AudienceEnterRoom': {
+                        inRoomImg.push(lastRoomTextInfo.userAvatar)
+                        const userImgList = this.data.userImgList
+                        if (userImgList.length < 3) {
+                            userImgList.push(lastRoomTextInfo.userAvatar)
+                            this.setData({
+                                userImgList: userImgList
+                            })
+                        }
+                        break
+                    }
+                    case 'AudienceLeaveRoom': {
+                        inRoomImg = inRoomImg.filter(item => item !== lastRoomTextInfo.userAvatar)
+                        let userImgList = this.data.userImgList
+                        if (userImgList.indexOf(lastRoomTextInfo.userAvatar) > -1) {
+                            userImgList = inRoomImg.filter((item, index) => index < 3)
+                            this.setData({
+                                userImgList: userImgList
+                            })
+                        }
+                        break
+                    }
+                }
             }
         }
     },
@@ -30,7 +60,10 @@ Component({
      */
     data: {
         value: '',
-        toIndex: ''
+        toIndex: '',
+        keyBoardHeight: 0,
+        focusInput: false,
+        userImgList: []
     },
 
     /**
@@ -39,13 +72,38 @@ Component({
     methods: {
         onConfirm(event) {
             const text = event.detail
+            if (!text) {
+                return
+            }
             this.setData({
                 value: ''
             })
             this.triggerEvent('sendTextMsgEvent', {text: text})
         },
+        onFocus(event) {
+            const keyBoardHeight = event.detail.height
+            this.setData({
+                keyBoardHeight: keyBoardHeight
+            })
+        },
+        onClickInput() {
+            this.setData({
+                focusInput: true
+            })
+        },
+        onBlur() {
+            this.setData({
+                focusInput: false
+            })
+        },
         onSendRose() {
             this.component && this.component.onSendRose()
+            const customMsg = {
+                cmd: "AudienceCallLike",
+                data: {}
+            }
+            const strCustomMsg = JSON.stringify(customMsg);
+            webimhandler.sendCustomMsg({data: strCustomMsg, text: "notify"}, null)
         },
         onLinkTeacher() {
             this.triggerEvent('lintTeacher')

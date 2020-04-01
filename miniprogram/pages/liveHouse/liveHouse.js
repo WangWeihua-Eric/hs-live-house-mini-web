@@ -43,7 +43,7 @@ Page({
             sdkAppID: userSig.sdkAppID,
             userID: userID,
             userSig: userSig.userSig,
-            userName: this.userName,
+            userName: '大王叫我来巡山',
             userAvatar: ''
         }
 

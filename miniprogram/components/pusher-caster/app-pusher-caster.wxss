@@ -114,6 +114,7 @@
 
 .scroll-content {
     max-height: 369rpx;
+    scrollbar-width: none;
 }
 
 .live-text-item {

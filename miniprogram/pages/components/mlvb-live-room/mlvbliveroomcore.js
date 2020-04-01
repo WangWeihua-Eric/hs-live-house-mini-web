@@ -131,11 +131,12 @@ function login(options) {
         });
         return;
     }
+
     accountInfo.userID = options.data.userID;
     accountInfo.userSig = options.data.userSig;
     accountInfo.sdkAppID = options.data.sdkAppID;
     accountInfo.userName = options.data.userName || userName[Math.floor(Math.random() * 10)] || accountInfo.userID;
-    accountInfo.userAvatar = options.data.userAvatar || '../../images/test2.png';
+    accountInfo.userAvatar = options.data.userAvatar;
 
     request({
         url: 'login',
@@ -160,6 +161,8 @@ function login(options) {
             mTimeDiff = Math.round(Date.now()) - ret.data.timestamp;
             // 登录IM
             loginIM({
+                userName: accountInfo.userName,
+                userAvatar: accountInfo.userAvatar,
                 success: function (ret) {
                     options.success && options.success({
                         userID: accountInfo.userID,
@@ -269,7 +272,7 @@ function loginIM(options) {
     var listeners = {
         "onConnNotify": webimhandler.onConnNotify, //选填
         "onBigGroupMsgNotify": function (msg) {
-            // console.log('11223344: ', msg)
+            console.log('onBigGroupMsgNotify: ', msg)
             webimhandler.onBigGroupMsgNotify(msg, function (msgs) {
                 receiveMsg(msgs);
             }, function (datas) {
@@ -366,19 +369,19 @@ function receiveMsg(msg) {
     s.length == 1 ? (s = '0' + s) : '';
     time = h + ':' + m + ':' + s;
     msg.time = time;
-
     if (msg.fromAccountNick == '@TIM#SYSTEM') {
         msg.fromAccountNick = '';
         msg.content = msg.content.split(';');
         msg.content = msg.content[0];
-        event.onRecvRoomTextMsg && event.onRecvRoomTextMsg({
-            roomID: roomInfo.roomID,
-            userID: msg.fromAccountNick,
-            userName: msg.userName,
-            userAvatar: msg.userAvatar,
-            message: msg.content,
-            time: msg.time
-        });
+        console.log('12312: ', msg)
+        // event.onRecvRoomTextMsg && event.onRecvRoomTextMsg({
+        //     roomID: roomInfo.roomID,
+        //     userID: msg.fromAccountNick,
+        //     userName: msg.userName,
+        //     userAvatar: msg.userAvatar,
+        //     message: msg.content,
+        //     time: msg.time
+        // });
     } else {
         var contentObj, newContent;
         try {
@@ -390,7 +393,25 @@ function receiveMsg(msg) {
             newContent[0] = msg.content;
             contentObj = JSON.parse(msg.content);
         }
-        if (contentObj.cmd == 'CustomTextMsg') {
+        if (contentObj.cmd === 'AudienceEnterRoom') {
+            msg.userName = contentObj.data.nickName;
+            msg.userAvatar = contentObj.data.headPic;
+            event.onRecvRoomTextMsg && event.onRecvRoomTextMsg({
+                userAvatar: msg.userAvatar,
+                message: `${msg.userName} 进入了直播间`,
+                time: msg.time,
+                type: 'AudienceEnterRoom'
+            });
+        } else if (contentObj.cmd === 'AudienceLeaveRoom') {
+            msg.userName = contentObj.data.nickName;
+            msg.userAvatar = contentObj.data.headPic;
+            event.onRecvRoomTextMsg && event.onRecvRoomTextMsg({
+                userAvatar: msg.userAvatar,
+                message: `${msg.userName} 离开了直播间`,
+                time: msg.time,
+                type: 'AudienceLeaveRoom'
+            });
+        } else if (contentObj.cmd == 'CustomTextMsg') {
             msg.userName = contentObj.data.nickName;
             msg.userAvatar = contentObj.data.headPic;
             var content = '';
@@ -470,9 +491,12 @@ function recvC2CMsg(msg) {
 function notifyPusherChange() {
     var customMsg = {
         cmd: "AudienceLeaveRoom",
-        data: {}
+        data: {
+            nickName: accountInfo.userName,
+            headPic: accountInfo.userAvatar
+        }
     }
-    var strCustomMsg = JSON.stringify(customMsg);
+    const strCustomMsg = JSON.stringify(customMsg);
     webimhandler.sendCustomMsg({data: strCustomMsg, text: "notify"}, null)
 }
 
@@ -1527,6 +1551,10 @@ function sendC2CCustomMsg(object) {
 }
 
 function sendCustomMsg(object) {
+    object.data = {
+        nickName: accountInfo.userName,
+        headPic: accountInfo.userAvatar
+    }
     const strCustomMsg = JSON.stringify(object);
     webimhandler.sendCustomMsg({data: strCustomMsg, text: "notify"}, null)
 }
