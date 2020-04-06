@@ -2,8 +2,15 @@
  * @file liveroom.js 直播模式房间管理sdk
  * @author binniexu
  */
+import {RoomInfoData} from "../../../data/room-info-data";
+
 var webim = require('./webim_wx');
 var webimhandler = require('./webim_handler');
+
+const roomInfoData = new RoomInfoData()
+
+let userImgList = []
+let showUserImgList = []
 
 
 //移动直播（<mlvb-live-room>）使用此地址实现房间服务和连麦功能
@@ -278,7 +285,6 @@ function loginIM(options) {
     var listeners = {
         "onConnNotify": webimhandler.onConnNotify, //选填
         "onBigGroupMsgNotify": function (msg) {
-            console.log('onBigGroupMsgNotify: ', msg)
             webimhandler.onBigGroupMsgNotify(msg, function (msgs) {
                 receiveMsg(msgs);
             }, function (datas) {
@@ -379,7 +385,6 @@ function receiveMsg(msg) {
         msg.fromAccountNick = '';
         msg.content = msg.content.split(';');
         msg.content = msg.content[0];
-        console.log('12312: ', msg)
         // event.onRecvRoomTextMsg && event.onRecvRoomTextMsg({
         //     roomID: roomInfo.roomID,
         //     userID: msg.fromAccountNick,
@@ -408,15 +413,20 @@ function receiveMsg(msg) {
                 time: msg.time,
                 type: 'AudienceEnterRoom'
             });
+            userImgEvent(msg.userAvatar, 'enter')
+            sendRoomInfo()
         } else if (contentObj.cmd === 'AudienceLeaveRoom') {
             msg.userName = contentObj.data.nickName;
             msg.userAvatar = contentObj.data.headPic;
-            event.onRecvRoomTextMsg && event.onRecvRoomTextMsg({
-                userAvatar: msg.userAvatar,
-                message: `${msg.userName} 离开了直播间`,
-                time: msg.time,
-                type: 'AudienceLeaveRoom'
-            });
+            if (msg.userName) {
+                event.onRecvRoomTextMsg && event.onRecvRoomTextMsg({
+                    userAvatar: msg.userAvatar,
+                    message: `${msg.userName} 离开了直播间`,
+                    time: msg.time,
+                    type: 'AudienceLeaveRoom'
+                });
+                userImgEvent(msg.userAvatar, 'leave')
+            }
         } else if (contentObj.cmd === 'RoomInfoUpdate') {
             event.onRoomInfoUpdate && event.onRoomInfoUpdate({
                 roomInfo: contentObj.data
@@ -471,6 +481,58 @@ function receiveMsg(msg) {
     }
 
 };
+
+function sendRoomInfo() {
+    const nowRoomInfo = roomInfoData.getRoomInfo()
+    const customMsg = {
+        cmd: "RoomInfoUpdate",
+        data: {
+            anchorAvatar: nowRoomInfo.anchorAvatar,
+            anchorName: nowRoomInfo.anchorName,
+            anchorDesc: nowRoomInfo.anchorDesc
+        }
+    }
+    const strCustomMsg = JSON.stringify(customMsg);
+    webimhandler.sendCustomMsg({data: strCustomMsg, text: "notify"}, null)
+}
+
+function userImgEvent(userImg, eventType) {
+    switch (eventType) {
+        case 'enter': {
+            if (!(userImgList.indexOf(userImg) > -1)) {
+                userImgList.push(userImg)
+                if (showUserImgList && userImgList.length < 3) {
+                    showUserImgList.push(userImg)
+                }
+            }
+            //  发送用户头像更新通知
+            emitUserImgUpdateMsg()
+            break
+        }
+        case 'leave': {
+            userImgList = userImgList.filter(item => item !== userImg)
+            if (showUserImgList && showUserImgList.length) {
+                if (showUserImgList.indexOf(userImg) > -1) {
+                    showUserImgList = userImgList.filter((item, index) => index < 3)
+                    //  发送用户头像更新通知
+                    emitUserImgUpdateMsg()
+                }
+            }
+            break
+        }
+    }
+}
+
+function emitUserImgUpdateMsg() {
+    const customMsg = {
+        cmd: "UserImgUpdate",
+        data: {
+            showUserImgList: showUserImgList
+        }
+    }
+    const strCustomMsg = JSON.stringify(customMsg);
+    webimhandler.sendCustomMsg({data: strCustomMsg, text: "notify"}, null)
+}
 
 function recvC2CMsg(msg) {
     console.log("收到C2C消息:", JSON.stringify(msg));

@@ -1,4 +1,3 @@
-// components/pusher-caster/app-pusher-caster.js
 import {debounceForFunction} from "../../utils/time-utils/time-utils";
 
 Component({
@@ -9,7 +8,8 @@ Component({
         roomTextList: {type: Array, value: []},
         pusherStatus: {type: Number, value: 1},
         beauty: {type: Number, value: 5},
-        requestJoinAnchorList: {type: Array, value: []}
+        requestJoinAnchorList: {type: Array, value: []},
+        members: {type: Array, value: []}
     },
 
     /**
@@ -24,7 +24,7 @@ Component({
         show: false,
         bgColor: 'rgba(0,0,0,0.75)',
         inLink: false,
-        inLinkUser: {}
+        inLinkUser: {},
     },
 
     observers: {
@@ -45,6 +45,23 @@ Component({
                         toIndex: id
                     })
                 }
+            }
+        },
+        "members": function (members) {
+            if(members && members.length) {
+                let inLink = false
+                members.forEach(item => {
+                    if (item.accelerateURL) {
+                        inLink = true
+                    }
+                })
+                this.setData({
+                    inLink: inLink
+                })
+            } else {
+                this.setData({
+                    inLink: false
+                })
             }
         }
     },
@@ -120,9 +137,17 @@ Component({
             })
         },
         onRejectLinkEvent(event) {
+            const audience = event.currentTarget.dataset.value
+
+            const requestJoinAnchorList = this.data.requestJoinAnchorList
+            const requestJoinAnchorListTemp = requestJoinAnchorList.filter(item => item.userAvatar !== audience.userAvatar)
+            this.setData({
+                requestJoinAnchorList: requestJoinAnchorListTemp
+            })
+
             const params = {
                 agree: false,
-                audience: event.currentTarget.dataset.value
+                audience: audience
             }
             this.triggerEvent('opLinkEvent', params)
         },
@@ -134,6 +159,11 @@ Component({
             this.setData({
                 inLink: false,
                 inLinkUser: {}
+            })
+        },
+        onBackBtn() {
+            wx.navigateBack({
+                delta: 1
             })
         }
     }

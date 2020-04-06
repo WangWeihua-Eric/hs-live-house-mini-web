@@ -2,27 +2,29 @@
 	"miniprogramRoot": "miniprogram/",
 	"cloudfunctionRoot": "cloudfunctions/",
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": true,
+		"enhance": true,
 		"postcss": true,
 		"minified": true,
 		"newFeature": true,
 		"coverView": true,
+		"nodeModules": true,
 		"autoAudits": false,
 		"showShadowRootInWxmlPanel": true,
 		"scopeDataCheck": false,
 		"checkInvalidKey": true,
+		"checkSiteMap": true,
+		"uploadWithSourceMap": true,
 		"babelSetting": {
 			"ignore": [],
 			"disablePlugins": [],
 			"outputPath": ""
-		},
-		"nodeModules": true,
-		"enhance": true
+		}
 	},
 	"libVersion": "2.8.1",
 	"appid": "wx7854b9c2baa260f7",
-	"projectname": "hs-live-house-mini-web",
+	"projectname": "hs-live-audience",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"condition": {
@@ -71,15 +73,15 @@
 				},
 				{
 					"id": 3,
-					"name": "观众端入口",
-					"pathName": "pages/audience-room-list/audience-room-list",
-					"query": "type=create&roomName=11&userName=&pureAudio=false",
+					"name": "跳入直播间带参数",
+					"pathName": "pages/mlvb-live-room-demo/live-room-page/room",
+					"query": "userId=oFxSM5XR2ysBlciIYmB245SPQEWk&userName=胖🐟🐴&userAvatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83ep2NWUXFcKATNANjc6mVfZCwFG6JwiaHaxMksR8QKydgtraWPH2OEq0SgR5lg0n7ib6DHkERGgX1vsQ/132&roomID=room_lec1_c134&roomName=打造美丽的眼睫毛&sessionId=407169067426861056",
 					"scene": null
 				},
 				{
-					"id": -1,
-					"name": "pages/liveHouse/liveHouse",
-					"pathName": "pages/liveHouse/liveHouse",
+					"id": 4,
+					"name": "跳进直播间无参数",
+					"pathName": "pages/mlvb-live-room-demo/live-room-page/room",
 					"query": "",
 					"scene": null
 				}

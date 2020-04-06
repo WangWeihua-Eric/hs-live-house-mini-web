@@ -2,7 +2,7 @@
     <!--  直播预备  -->
     <!--    <view wx:if="{{pusherStatus === 1}}" class="pre-push f-c-je-ac">-->
     <view wx:if="{{pusherStatus === 1 && playStatus === 0}}" class="pre-push f-c-je-ac">
-        <view class="start-btn f-jc-ac" bindtap="onPlayLive">开始直播</view>
+        <view class="start-btn f-jc-ac" bindtap="onPlayLive">开始</view>
         <view class="caster-bottom f-je-ac">
             <image class="bottom-util" lazy-load="{{true}}"
                    src="{{beauty === 5 ? 'cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/beauty.png' : 'cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/cuty.png'}}"
@@ -21,7 +21,11 @@
     </view>
 
     <view wx:if="{{playStatus === 3}}" class="play-content f-c-jb-ac">
-        <view></view>
+        <view class="play-header f-jb-ac">
+            <view class="back-btn" bindtap="onBackBtn">
+                <van-icon name="arrow-left" />
+            </view>
+        </view>
         <view class="play-content-bottom f-c-je-ac">
             <view class="play-message f-jb-ae">
                 <view class="live-list-content">

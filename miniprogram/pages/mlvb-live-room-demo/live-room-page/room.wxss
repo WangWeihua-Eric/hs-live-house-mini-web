@@ -1,8 +1,71 @@
 @import '../../../style/flex-base.wxss'
 
 Page {
+    width: 100%;
     height: 100%;
     overflow: hidden;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.bg-img {
+    width: 750rpx;
+    height: 543rpx;
+}
+
+.over-content {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background:rgba(0, 0, 0, 0.85);
+}
+
+.user-img {
+    width: 126rpx;
+    height: 126rpx;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.user-name {
+    font-size:32rpx;
+    font-family:PingFangSC-Medium,PingFang SC;
+    font-weight:500;
+    color:rgba(238,237,235,1);
+    margin-top: 10rpx;
+}
+
+.tip {
+    font-size:48rpx;
+    font-family:PingFangSC-Semibold,PingFang SC;
+    font-weight:600;
+    color:rgba(255,255,255,1);
+    margin-top: 18rpx;
+}
+
+.sub-tip {
+    font-size:32rpx;
+    font-family:PingFangSC-Regular,PingFang SC;
+    color:rgba(255,255,255,1);
+    margin-top: 51rpx;
+}
+
+.enter-room {
+    width:240rpx;
+    height:76rpx;
+    background:rgba(126,205,105,1);
+    border-radius:38rpx;
+    font-size:32rpx;
+    font-family:PingFangSC-Medium,PingFang SC;
+    font-weight:500;
+    color:rgba(255,255,255,1);
+    margin-top: 187rpx;
 }
 
 .audience-content {

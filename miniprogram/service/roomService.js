@@ -1,5 +1,4 @@
 const liveroom = require('../pages/components/mlvb-live-room/mlvbliveroomcore.js')
-const GenerateTestUserSig = require("../pages/mlvb-live-room-demo/debug/GenerateTestUserSig.js")
 
 let singletonPattern = null;
 
@@ -14,13 +13,12 @@ export class RoomService {
     /**
      * 登录房间
      */
-    loginRoom(roomId, userName) {
-        const roomSig = GenerateTestUserSig.genTestUserSig(roomId)
+    loginRoom(roomId, userName, userSig, roomAppId) {
 
         const loginInfo = {
-            sdkAppID: roomSig.sdkAppID,
+            sdkAppID: roomAppId,
             userID: roomId,
-            userSig: roomSig.userSig,
+            userSig: userSig,
             userName: userName,
             userAvatar: ''
         }

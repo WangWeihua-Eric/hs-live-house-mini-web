@@ -1,8 +1,8 @@
 <view class="content">
     <image class="login-bg" src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/login-bg.png"></image>
     <view class="sub-content f-c-js-ac">
-        <view class="title f-js-ac">红松直播讲师端</view>
-        <view class="sub-title f-js-ac">学知识、交朋友</view>
+        <view class="title f-js-ac">{{title}}</view>
+        <view class="sub-title f-js-ac">{{subtitle}}</view>
         <view class="user-phone f-js-ac">
             <view class="user-phone-input f-js-ac">
                 <van-field
@@ -30,4 +30,6 @@
         </view>
         <view class="login-btn f-jc-ac" bindtap="toLoginBtn">登录</view>
     </view>
+
+    <van-toast id="van-toast" />
 </view>

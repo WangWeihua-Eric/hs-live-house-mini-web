@@ -39,8 +39,6 @@
                     鼓励一下老师...
                 </view>
 
-                <image class="share-live"
-                       src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/share-live-btn.png"></image>
                 <view class="send-rose" catch:tap="onLinkTeacher">
                     <image class="send-rose"
                            src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/join-live-btn.png"></image>

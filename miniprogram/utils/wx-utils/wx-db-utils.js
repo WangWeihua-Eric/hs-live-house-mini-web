@@ -1,5 +1,5 @@
 const db = wx.cloud.database({
-    env: 'hs-class-schedule-we-8wofx'
+    env: 'live-house-nodecloud'
 });
 
 export function getWithWhere(position, params) {

@@ -1,14 +1,13 @@
 {
   "pages": [
+    "pages/mlvb-live-room-demo/live-room-page/room",
     "pages/audience-room-list/audience-room-list",
-    "pages/liveHouse/liveHouse",
     "pages/caster-login/caster-login",
     "pages/liveRoomList/liveRoomList",
     "pages/home-page/main",
     "pages/live-player-demo/play",
     "pages/live-pusher-demo/push-config/push-config",
     "pages/live-pusher-demo/push",
-    "pages/mlvb-live-room-demo/live-room-page/room",
     "pages/mlvb-live-room-demo/room-list-page/roomlist",
     "pages/mlvb-live-room-demo/new-room-page/roomname",
     "pages/rtc-player-demo/rtplay"

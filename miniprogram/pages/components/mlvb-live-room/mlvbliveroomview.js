@@ -483,7 +483,7 @@ Component({
                     });
                 },
                 fail: function (ret) {
-                    console.error('enterRoom 失败: ', ret)
+                    // console.error('enterRoom 失败: ', ret)
                     if (!self.data.unload) {
                         self.data.playerContex && self.data.playerContext.stop();
                         self.triggerEvent('RoomEvent', {

@@ -1,12 +1,13 @@
-import {getSetting, getUserInfo} from "../../../utils/wx-utils/wx-base-utils";
-import {login} from "../../../utils/wx-utils/wx-cloud-utils";
+import {getSetting, pageJump} from "../../../utils/wx-utils/wx-base-utils";
+import {RoomInfoService} from "./service/roomInfoService";
 
 const liveroom = require('../../components/mlvb-live-room/mlvbliveroomcore.js')
 const GenerateTestUserSig = require("../../mlvb-live-room-demo/debug/GenerateTestUserSig.js")
 
 const app = getApp()
+const roomService = new RoomInfoService()
+
 let loadOptions = {}
-let openId = ''
 
 Page({
     component: null,
@@ -31,108 +32,94 @@ Page({
         headerHeight: app.globalData.headerHeight,
         statusBarHeight: app.globalData.statusBarHeight,
         inputFocus: false,
-        scopeUserInfo: true
+        scopeUserInfo: true,
+        noLogin: false
     },
 
     refresh(options) {
-        getUserInfo().then(userInfo => {
-            console.log('userInfo: ', userInfo)
-            if (userInfo && userInfo.userInfo) {
-                const userData = userInfo.userInfo
-                const userId = openId
-                const userName = userData.nickName
-                const userAvatar = userData.avatarUrl
+        wx.showLoading({
+            title: '登录房间中',
+        })
 
-                wx.showLoading({
-                    title: '登录信息获取中',
+        const userId = options.userId
+        const userName = options.userName
+        const userAvatar = options.userAvatar
+
+        const userSig = GenerateTestUserSig.genTestUserSig(userId)
+
+        const loginInfo = {
+            sdkAppID: userSig.sdkAppID,
+            userID: userId,
+            userSig: userSig.userSig,
+            userName: userName,
+            userAvatar: userAvatar
+        }
+
+        //MLVB 登录
+        liveroom.login({
+            data: loginInfo,
+            success: (res) => {
+                //登录成功
+                wx.hideLoading()
+                this.setData({
+                    roomID: options.roomID,
+                    roomName: options.roomName,
+                    userName: userName,
+                    role: 'audience',
+                    showLiveRoom: true
+                }, function () {
+                    this.start();
                 })
 
-                const userSig = GenerateTestUserSig.genTestUserSig(userId)
-
-                const loginInfo = {
-                    sdkAppID: userSig.sdkAppID,
-                    userID: userId,
-                    userSig: userSig.userSig,
-                    userName: userName,
-                    userAvatar: userAvatar
-                }
-
-                //MLVB 登录
-                liveroom.login({
-                    data: loginInfo,
-                    success: () => {
-                        //登录成功
-                        wx.hideLoading()
-
-                        const role = options.type == 'create' ? 'anchor' : 'audience';
-
-                        if (role == 'audience') {
-                            this.setData({
-                                roomID: options.roomID,
-                                roomName: options.roomName,
-                                userName: options.userName,
-                                role: role,
-                                showLiveRoom: true
-                            }, function () {
-                                this.start();
-                            })
-                        } else {
-                            this.setData({
-                                roomName: options.roomName,
-                                userName: options.userName,
-                                pureAudio: JSON.parse(options.pureAudio),
-                                role: role,
-                                showLiveRoom: true
-                            }, function () {
-                                this.start();
-                            })
-                        }
-
-                    },
-                    fail: (ret) => {
-                        //登录失败
-                        wx.hideLoading()
-                        wx.showModal({
-                            title: '提示',
-                            content: ret.errMsg,
-                            showCancel: false,
-                            complete: () => {}
-                        })
-                    }
+            },
+            fail: (ret) => {
+                //登录失败
+                wx.hideLoading()
+                wx.showModal({
+                    title: '登录失败',
+                    content: ret.errMsg,
+                    showCancel: false,
+                    complete: () => {}
                 })
             }
-        }).catch(() => {})
+        })
     },
 
     onLoad: function (options) {
         loadOptions = options
-        login().then(res => {
-            if (res && res.result && res.result.openid) {
-                openId = res.result.openid
 
-                getSetting('scope.userInfo').then(scopeRes => {
-                    if (scopeRes) {
-                        //  已授权
-                        this.setData({
-                            scopeUserInfo: true
-                        })
-                        this.refresh(options)
-                    } else {
-                        //  未授权
-                        this.setData({
-                            scopeUserInfo: false
-                        })
-                    }
-                }).catch(err => {
-                    //  接口出错当未授权处理
-                    this.setData({
-                        scopeUserInfo: false
-                    })
+        const userId = options.userId
+        const userName = options.userName
+        const userAvatar = options.userAvatar
+        const roomID = options.roomID
+        const roomName = options.roomName
+        const sessionId = options.sessionId
+        const role = options.type === 'create' ? 'anchor' : 'audience'
+        if (role !== 'audience') {
+            this.setData({
+                roomID: roomID,
+                roomName: roomName,
+                userName: userName,
+                role: role,
+                showLiveRoom: true
+            }, function () {
+                this.start();
+            })
+        } else {
+            if (!userId || !userName || !userAvatar || !roomID || !roomName || !sessionId) {
+                this.setData({
+                    noLogin: true
                 })
+            } else {
+                roomService.queryRoomInfo(sessionId, roomID).then(res => {
+                    console.log('roomroom: ', res)
+                })
+                this.setData({
+                    noLogin: false
+                })
+                this.refresh(options)
             }
-        }).catch(() => {
-
-        })
+        }
     },
 
     onReady: function () {
@@ -148,29 +135,30 @@ Page({
         console.log('onRoomEvent', args)
         switch (args.tag) {
             case 'roomClosed': {
-                wx.showModal({
-                    content: `房间已解散`,
-                    showCancel: false,
-                    complete: () => {
-                        // wx.navigateBack({delta: 1})
-                    }
-                });
+                self.setData({
+                    noLogin: true
+                })
                 break;
             }
             case 'error': {
-                wx.showToast({
-                    title: `${args.detail}[${args.code}]`,
-                    icon: 'none',
-                    duration: 1500
-                })
+                // wx.showToast({
+                //     title: `${args.detail}[${args.code}]`,
+                //     icon: 'none',
+                //     duration: 1500
+                // })
                 if (args.code == 5000) {
                     this.data.shouldExit = true;
                 } else {
-                    console.error("收到error:", args)
+                    if (args.code === -9003) {
+                        self.setData({
+                            noLogin: true
+                        })
+                        console.log(this.data.noLogin)
+                    }
                     if (args.code != -9004) {
-                        setTimeout(() => {
-                            wx.navigateBack({delta: 1})
-                        }, 1500)
+                        // setTimeout(() => {
+                        //     wx.navigateBack({delta: 1})
+                        // }, 1500)
                     } else {
                         self.setData({
                             linked: false,
@@ -415,5 +403,10 @@ Page({
                 scopeUserInfo: false
             })
         })
+    },
+
+    onJumpServer() {
+        const url = '../../caster-login/caster-login'
+        pageJump(url).then(() => {}).catch(() => {})
     }
 })

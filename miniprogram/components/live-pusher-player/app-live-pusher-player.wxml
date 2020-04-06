@@ -13,6 +13,7 @@
             </live-pusher>
             <view class="live-content">
                 <app-pusher-caster roomTextList="{{roomTextList}}" pusherStatus="{{pusherStatus}}" beauty="{{beauty}}"
+                                   members="{{members}}"
                                    requestJoinAnchorList="{{requestJoinAnchorList}}"
                                    bind:switchCameraEvent="onSwitchCameraEvent"
                                    bind:casterStartEvent="onCasterStartEvent"

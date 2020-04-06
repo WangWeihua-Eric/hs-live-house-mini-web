@@ -1,8 +1,11 @@
 import {CasterLoginService} from "./service/casterLoginService";
 import {pageJump} from "../../utils/wx-utils/wx-base-utils";
+import {getWithWhere} from "../../utils/wx-utils/wx-db-utils";
+import Toast from '@vant/weapp/toast/toast';
 
 const md5 = require('md5');
 const casterLoginService = new CasterLoginService()
+const app = getApp()
 
 Page({
 
@@ -10,15 +13,38 @@ Page({
      * 页面的初始数据
      */
     data: {
-        phoneValue: '18610637369',
-        pwValue: '123456'
+        phoneValue: '',
+        pwValue: '',
+        title: '',  //  红松直播讲师端
+        subtitle: ''    //  学知识、交朋友
     },
 
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-        console.log(md5('13364003436'));
+        getWithWhere('inreview', {position: 'inreview'}).then(inReviewRes => {
+            if (inReviewRes.length) {
+                const inReviewInfo = inReviewRes[0]
+                if (inReviewInfo.inreview) {
+                    this.setData({
+                        phoneValue: '18610637369',
+                        pwValue: '123456',
+                        title: '小江客服',
+                        subtitle: ''
+                    })
+                    app.globalData.inReview = true
+                } else {
+                    this.setData({
+                        phoneValue: '',
+                        pwValue: '',
+                        title: '红松直播讲师端',
+                        subtitle: '学知识、交朋友'
+                    });
+                    app.globalData.inReview = false
+                }
+            }
+        })
     },
 
     /**
@@ -39,7 +65,7 @@ Page({
      * 生命周期函数--监听页面隐藏
      */
     onHide: function () {
-
+        Toast.clear()
     },
 
     /**
@@ -79,31 +105,48 @@ Page({
 
     onPwChange(event) {
         // event.detail 为当前输入的值
-        console.log(event.detail);
         this.setData({
             pwValue: event.detail
         })
     },
 
     toLoginBtn() {
+        Toast.loading({
+            mask: true,
+            message: '登录中...'
+        })
+
         const phone = this.data.phoneValue
+        const pw = this.data.pwValue
+        if (!phone || !pw) {
+            this.loginError()
+            return
+        }
         const phoneMd5 = md5(phone)
-        const pwMd5 = md5(phoneMd5 + this.data.pwValue)
+        const pwMd5 = md5(phoneMd5 + pw)
         const params = {
             phone: phone,
             passwd: pwMd5
         }
 
         casterLoginService.casterToLogin(params).then(res => {
-            console.log(res)
             const sessionId = res.sessionId
             const url = `../liveRoomList/liveRoomList?sessionId=${sessionId}`
             pageJump(url).then(() => {
             }).catch(() => {
             })
 
-        }).catch(e => {
-            console.log(e)
+        }).catch(() => {
+            this.loginError()
+        })
+    },
+
+    loginError() {
+        wx.showModal({
+            title: '登录失败',
+            content: '请输入正确的手机号和密码',
+            showCancel: false,
+            success: () => {}
         })
     }
 })

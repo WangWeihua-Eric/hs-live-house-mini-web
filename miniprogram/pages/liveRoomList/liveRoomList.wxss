@@ -10,3 +10,7 @@ Page {
     box-sizing: border-box;
     padding: 40rpx 47rpx;
 }
+
+.room-list {
+    margin-bottom: 20rpx;
+}

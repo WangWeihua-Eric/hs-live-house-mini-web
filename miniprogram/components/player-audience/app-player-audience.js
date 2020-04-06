@@ -19,12 +19,6 @@ Component({
         linkPusherInfo: {type: Object, value: {}}
     },
 
-    lifetimes: {
-        attached() {
-            this.component = this.selectComponent("#id_sendrose")
-        }
-    },
-
     observers: {
         "roomTextList": function(roomTextList) {
             if(roomTextList && roomTextList.length) {
@@ -120,7 +114,11 @@ Component({
             if (!number) {
                 return
             }
-            this.component && this.component.onSendRose()
+
+            console.log('id_sendroseid_sendrose')
+            this.component = this.selectComponent("#id_sendrose")
+            console.log('this.component', this.component)
+            this.component.onSendRose()
             const userInfo = liveroom.getAccountInfo()
             const customMsg = {
                 cmd: "AudienceCallLike",
