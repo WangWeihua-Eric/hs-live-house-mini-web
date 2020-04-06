@@ -81,7 +81,11 @@ Component({
         quitLinking: false,
         roomTextList: [],
         pusherStatus: 0, //  0: 主播初始状态，1：直播准备中，2：直播中
-        requestJoinAnchorList: []
+        requestJoinAnchorList: [],
+        showUserImgList: [],
+        roomInfoData: {},
+        requestLinkOk: false,
+        requestLinkError: false
     },
 
     methods: {
@@ -253,7 +257,9 @@ Component({
                 onKickoutJoinAnchor: self.onKickoutJoinAnchor,
                 onRequestJoinAnchor: self.onRequestJoinAnchor,
                 onAnchorExit: self.onAnchorExit,
-                onAnchorEnter: self.onAnchorEnter
+                onAnchorEnter: self.onAnchorEnter,
+                onUserImgUpdate: self.onUserImgUpdate,
+                onRoomInfoUpdate: self.onRoomInfoUpdate
             });
         },
 
@@ -445,7 +451,9 @@ Component({
                 onSketchpadData: self.onSketchpadData,
                 onAnchorExit: self.onLinkPusherQuit,
                 onAnchorEnter: self.onAnchorEnter,
-                onKickoutJoinAnchor: self.onKickoutJoinAnchor
+                onKickoutJoinAnchor: self.onKickoutJoinAnchor,
+                onUserImgUpdate: self.onUserImgUpdate,
+                onRoomInfoUpdate: self.onRoomInfoUpdate
             });
             liveroom.enterRoom({
                 data: {
@@ -624,8 +632,8 @@ Component({
                 loading: false,
                 objectFit: 'fillCrop',
                 userName: self.data.audience.pusherName,
-                maxCache: 3,
-                minCache: 1
+                maxCache: 0.3,
+                minCache: 0.1
             }]
             return new Promise((resolve) => {
                 self.setData({
@@ -733,6 +741,10 @@ Component({
             }
             console.info('用户请求连麦')
             self.data.requestLinking = true;
+            self.setData({
+                requestLinkError: false,
+                requestLinkOk: false
+            })
             liveroom.requestJoinAnchor({
                 data: {
                     timeout: 10000
@@ -740,16 +752,22 @@ Component({
                 success: function (ret) {
                     self.data.requestLinking = false;
                     console.log('请求连麦成功: ', ret)
+                    self.setData({
+                        requestLinkOk: true
+                    })
                     self.link();
                 },
                 fail: function (e) {
                     console.log('请求连麦失败: ', e)
                     self.data.requestLinking = false;
-                    self.triggerEvent('RoomEvent', {
-                        tag: 'error',
-                        code: -9004,
-                        detail: e.errMsg
+                    self.setData({
+                        requestLinkError: true
                     })
+                    // self.triggerEvent('RoomEvent', {
+                    //     tag: 'error',
+                    //     code: -9004,
+                    //     detail: e.errMsg
+                    // })
                 }
             });
         },
@@ -1086,6 +1104,20 @@ Component({
                 tag: 'recvTextMsg',
                 code: 0,
                 detail: ret
+            })
+        },
+        onUserImgUpdate(ret) {
+            const self = _this;
+            const showUserImgList = ret.showUserImgList
+            self.setData({
+                showUserImgList: showUserImgList
+            })
+        },
+        onRoomInfoUpdate(ret) {
+            const self = _this;
+            const roomInfoData = ret.roomInfo
+            self.setData({
+                roomInfoData: roomInfoData
             })
         },
         onSketchpadData(ret) {

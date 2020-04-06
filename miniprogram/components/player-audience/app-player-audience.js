@@ -1,6 +1,8 @@
 const webimhandler = require('../../pages/components/mlvb-live-room/webim_handler');
+const liveroom = require('../../pages/components/mlvb-live-room/mlvbliveroomcore.js');
 
-let inRoomImg = []
+let roseNumber = 0
+let roseTimeHandle = null
 
 Component({
     component: null,
@@ -9,7 +11,12 @@ Component({
      * 组件的属性列表
      */
     properties: {
-        roomTextList: {type: Array, value: []}
+        roomTextList: {type: Array, value: []},
+        showUserImgList: {type: Array, value: []},
+        roomInfoData: {type: Object, value: {}},
+        requestLinkError: {type: Boolean, value: false},
+        requestLinkOk: {type: Boolean, value: false},
+        linkPusherInfo: {type: Object, value: {}}
     },
 
     lifetimes: {
@@ -25,32 +32,23 @@ Component({
                 this.setData({
                     toIndex: id
                 })
-
-                const lastRoomTextInfo = roomTextList[roomTextList.length - 1]
-                switch (lastRoomTextInfo.type) {
-                    case 'AudienceEnterRoom': {
-                        inRoomImg.push(lastRoomTextInfo.userAvatar)
-                        const userImgList = this.data.userImgList
-                        if (userImgList.length < 3) {
-                            userImgList.push(lastRoomTextInfo.userAvatar)
-                            this.setData({
-                                userImgList: userImgList
-                            })
-                        }
-                        break
-                    }
-                    case 'AudienceLeaveRoom': {
-                        inRoomImg = inRoomImg.filter(item => item !== lastRoomTextInfo.userAvatar)
-                        let userImgList = this.data.userImgList
-                        if (userImgList.indexOf(lastRoomTextInfo.userAvatar) > -1) {
-                            userImgList = inRoomImg.filter((item, index) => index < 3)
-                            this.setData({
-                                userImgList: userImgList
-                            })
-                        }
-                        break
-                    }
-                }
+            }
+        },
+        "showUserImgList": function (showUserImgList) {
+            console.log('showUserImgList', showUserImgList)
+            this.setData({
+                userImgList: showUserImgList
+            })
+        },
+        "linkPusherInfo": function (linkPusherInfo) {
+            if (!linkPusherInfo.url) {
+                this.setData({
+                    requestLinkOk: false
+                })
+            } else {
+                this.setData({
+                    requestLinkOk: true
+                })
             }
         }
     },
@@ -63,7 +61,11 @@ Component({
         toIndex: '',
         keyBoardHeight: 0,
         focusInput: false,
-        userImgList: []
+        userImgList: [],
+        show: false,
+        bgColor: 'rgba(0,0,0,0.75)',
+        inCallLink: false,
+        callTime: 0
     },
 
     /**
@@ -97,16 +99,82 @@ Component({
             })
         },
         onSendRose() {
+            if (this.data.show) {
+                this.setData({
+                    show: false
+                })
+            } else {
+                this.realSendRose()
+            }
+        },
+        realSendRose() {
+            if (roseTimeHandle) {
+                clearTimeout(roseTimeHandle)
+            }
+            roseNumber++
+            roseTimeHandle = setTimeout(() => {
+                this.readyRose(roseNumber)
+            }, 5000)
+        },
+        readyRose(number = 0) {
+            if (!number) {
+                return
+            }
             this.component && this.component.onSendRose()
+            const userInfo = liveroom.getAccountInfo()
             const customMsg = {
                 cmd: "AudienceCallLike",
-                data: {}
+                data: {
+                    userID: userInfo.userID,
+                    userName: userInfo.userName,
+                    userAvatar: userInfo.userAvatar,
+                    number: number
+                }
             }
             const strCustomMsg = JSON.stringify(customMsg);
             webimhandler.sendCustomMsg({data: strCustomMsg, text: "notify"}, null)
+            roseNumber = 0
         },
+
         onLinkTeacher() {
-            this.triggerEvent('lintTeacher')
+            this.setData({ show: true });
         },
+        onClickLink() {
+            this.triggerEvent('lintTeacher')
+            this.setData({
+                inCallLink: true
+            })
+            this.callTimeLoop()
+        },
+        onCloseSheet() {
+            this.setData({ show: false });
+        },
+        callTimeLoop() {
+            if (this.data.requestLinkError || this.data.requestLinkOk) {
+                if (this.data.requestLinkError) {
+                    wx.showModal({
+                        title: '连麦失败',
+                        content: '老师未接听',
+                        showCancel: false
+                    })
+                }
+                this.setData({
+                    show: false,
+                    inCallLink: false,
+                    callTime: 0
+                })
+            } else {
+                setTimeout(() => {
+                    this.setData({
+                        callTime: this.data.callTime + 1
+                    })
+                    this.callTimeLoop()
+                }, 1000)
+            }
+        },
+
+        onCallDown() {
+            this.triggerEvent('onCallDown')
+        }
     }
 })

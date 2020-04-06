@@ -33,7 +33,12 @@
             </live-player>
             <view class="live-content">
                 <app-player-audience roomTextList="{{roomTextList}}" pusherStatus="{{pusherStatus}}"
+                                     showUserImgList="{{showUserImgList}}" roomInfoData="{{roomInfoData}}"
+                                     requestLinkError="{{requestLinkError}}"
+                                     requestLinkOk="{{requestLinkOk}}"
+                                     linkPusherInfo="{{linkPusherInfo}}"
                                      bind:sendTextMsgEvent="onSendTextMsg"
+                                     bind:onCallDown="quitLink"
                                      bind:lintTeacher="onLinkTeacherEvent"></app-player-audience>
             </view>
         </view>
@@ -46,16 +51,16 @@
                          enable-camera="{{!pureaudio}}" muted="{{muted}}" aspect="9:16"
                          waiting-image="https://mc.qcloudimg.com/static/img/daeed8616ac5df256c0591c22a65c4d3/pause_publish.jpg"
                          background-mute="true" debug="{{debug}}" bindstatechange="onLinkPush" binderror="onLinkError">
-                <cover-view class='close-ico' bindtap="quitLink">x</cover-view>
+<!--                <cover-view class='close-ico' bindtap="quitLink">x</cover-view>-->
             </live-pusher>
         </view>
         <view class='.v-sub-video' wx:for="{{members}}" wx:key="{{item.userID}}">
             <live-player wx:if="{{item.accelerateURL}}" id="{{item.userID}}" autoplay mode="RTC" object-fit="fillCrop"
                          min-cache="0.1" max-cache="0.3" src="{{item.accelerateURL}}" debug="{{debug}}"
                          background-mute="{{true}}">
-<!--                <cover-view class="close-ico" wx:if="{{item.userID == userID || isCaster}}" bindtap="kickoutJoinAnchor"-->
-<!--                            data-userid="{{item.userID}}">x-->
-<!--                </cover-view>-->
+                <!--                <cover-view class="close-ico" wx:if="{{item.userID == userID || isCaster}}" bindtap="kickoutJoinAnchor"-->
+                <!--                            data-userid="{{item.userID}}">x-->
+                <!--                </cover-view>-->
             </live-player>
         </view>
     </view>

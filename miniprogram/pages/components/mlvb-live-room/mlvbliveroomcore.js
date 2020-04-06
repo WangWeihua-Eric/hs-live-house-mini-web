@@ -53,6 +53,12 @@ var RoomServiceUrl = "https://liveroom.qcloud.com/weapp/live_room/",
         onRecvRoomCustomMsg: function () {
         }, //自定义消息通知
         onSketchpadData: function () {
+        },
+        onUserImgUpdate: function () {
+            //  用户头像更新
+        },
+        onRoomInfoUpdate: function () {
+            //  房间信息更新
         }
     };
 // 随机昵称
@@ -410,6 +416,16 @@ function receiveMsg(msg) {
                 message: `${msg.userName} 离开了直播间`,
                 time: msg.time,
                 type: 'AudienceLeaveRoom'
+            });
+        } else if (contentObj.cmd === 'RoomInfoUpdate') {
+            event.onRoomInfoUpdate && event.onRoomInfoUpdate({
+                roomInfo: contentObj.data
+            });
+        } else if (contentObj.cmd === 'UserImgUpdate') {
+            console.log('UserImgUpdateUserImgUpdate')
+            msg.showUserImgList = contentObj.data.showUserImgList;
+            event.onUserImgUpdate && event.onUserImgUpdate({
+                showUserImgList: msg.showUserImgList
             });
         } else if (contentObj.cmd == 'CustomTextMsg') {
             msg.userName = contentObj.data.nickName;
@@ -824,6 +840,10 @@ function setListener(options) {
     };
     event.onSketchpadData = options.onSketchpadData || function () {
     };
+    event.onUserImgUpdate = options.onUserImgUpdate || function () {
+    };
+    event.onRoomInfoUpdate = options.onRoomInfoUpdate || function () {
+    };
 }
 
 /**
@@ -958,7 +978,7 @@ function proto_joinAnchor(options) {
             heart = true;
             pusherHeartBeat(1);
             //通知房间内其他主播
-            notifyPusherChange();
+            // notifyPusherChange();
             options.success && options.success({roomID: roomInfo.roomID});
         },
         fail: function (ret) {
@@ -1194,7 +1214,7 @@ function quitJoinAnchor(options) {
             console.log('退出推流成功');
             roomInfo.pushers = [];
             //通知房间内其他主播
-            notifyPusherChange();
+            // notifyPusherChange();
             options.success && options.success({});
         },
         fail: function (ret) {

@@ -22,7 +22,11 @@ Component({
         statusBarHeight: {type: Number, value: app.globalData.statusBarHeight},
         roomTextList: {type: Array, value: []},
         pusherStatus: {type: Number, value: 0},
-        requestJoinAnchorList: {type: Array, value: []}
+        requestJoinAnchorList: {type: Array, value: []},
+        showUserImgList: {type: Array, value: []},
+        roomInfoData: {type: Object, value: {}},
+        requestLinkError: {type: Boolean, value: false},
+        requestLinkOk: {type: Boolean, value: false}
     },
 
     observers: {

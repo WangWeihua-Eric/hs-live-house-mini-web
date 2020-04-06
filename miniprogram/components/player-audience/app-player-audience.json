@@ -2,6 +2,7 @@
   "component": true,
   "usingComponents": {
     "van-field": "@vant/weapp/field/index",
-    "app-call-rose": "../call-rose/app-call-rose"
+    "app-call-rose": "../call-rose/app-call-rose",
+    "van-action-sheet": "@vant/weapp/action-sheet/index"
   }
 }
