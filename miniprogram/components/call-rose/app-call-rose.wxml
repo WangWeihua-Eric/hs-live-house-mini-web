@@ -49,8 +49,7 @@
             <image class="call-tip" src="../../images/rose-img.png"></image>
         </view>
     </view>
-    <view bindtap="onSendRose">
-        <image class="send-rose" lazy-load="{{true}}"
-               src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/send-rose-btn.png"></image>
+    <view class="send-rose-btn f-jc-ac" bindtap="onSendRose">
+        <image class="send-rose" lazy-load="{{true}}" src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/rose-img.png"></image>
     </view>
 </view>

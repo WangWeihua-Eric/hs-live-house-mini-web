@@ -15,6 +15,7 @@
                 <app-pusher-caster roomTextList="{{roomTextList}}" pusherStatus="{{pusherStatus}}" beauty="{{beauty}}"
                                    members="{{members}}"
                                    requestJoinAnchorList="{{requestJoinAnchorList}}"
+                                   linkError="{{linkError}}"
                                    bind:switchCameraEvent="onSwitchCameraEvent"
                                    bind:casterStartEvent="onCasterStartEvent"
                                    bind:opLinkEvent="onOpLinkEvent"
@@ -38,6 +39,7 @@
                                      requestLinkError="{{requestLinkError}}"
                                      requestLinkOk="{{requestLinkOk}}"
                                      linkPusherInfo="{{linkPusherInfo}}"
+                                     preLinkInfo="{{preLinkInfo}}"
                                      bind:sendTextMsgEvent="onSendTextMsg"
                                      bind:onCallDown="quitLink"
                                      bind:lintTeacher="onLinkTeacherEvent"></app-player-audience>

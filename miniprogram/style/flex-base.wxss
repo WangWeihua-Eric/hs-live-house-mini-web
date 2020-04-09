@@ -89,3 +89,9 @@
     align-items: flex-start;
     flex-wrap: wrap;
 }
+
+.f-jc-ae {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}

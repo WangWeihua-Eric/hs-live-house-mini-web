@@ -4,11 +4,13 @@ import {pageJump} from "../../utils/wx-utils/wx-base-utils";
 import {RoomService} from "../../service/roomService";
 import Toast from '@vant/weapp/toast/toast';
 import {RoomInfoData} from "../../data/room-info-data";
+import {UserBase} from "../../utils/user-utils/user-base";
 
 const liveRoomListService = new LiveRoomListService()
 const roomService = new RoomService()
 const app = getApp()
 const roomInfo = new RoomInfoData()
+const userBase = new UserBase()
 
 Page({
     sessionId: '',
@@ -136,6 +138,11 @@ Page({
             userSig = liveRoomInfo.userSig
             roomAppId = liveRoomInfo.roomAppId
         }
+
+        userBase.setGlobalData({
+            roomId: roomId,
+            userName: userName
+        })
 
         roomService.loginRoom(roomId, userName, userSig, roomAppId).then(() => {
             const url = `../mlvb-live-room-demo/live-room-page/room?type=create&roomName=${roomName}&userName=${userName}&pureAudio=false`

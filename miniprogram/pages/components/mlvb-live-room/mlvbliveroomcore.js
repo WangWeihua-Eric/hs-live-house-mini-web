@@ -3,11 +3,13 @@
  * @author binniexu
  */
 import {RoomInfoData} from "../../../data/room-info-data";
+import {UserBase} from "../../../utils/user-utils/user-base";
 
 var webim = require('./webim_wx');
 var webimhandler = require('./webim_handler');
 
 const roomInfoData = new RoomInfoData()
+const userBase = new UserBase()
 
 let userImgList = []
 let showUserImgList = []
@@ -66,6 +68,12 @@ var RoomServiceUrl = "https://liveroom.qcloud.com/weapp/live_room/",
         },
         onRoomInfoUpdate: function () {
             //  房间信息更新
+        },
+        onCasterPreLink: function () {
+            //  预链接
+        },
+        onAudienceToLink: function () {
+            //  链接
         }
     };
 // 随机昵称
@@ -76,7 +84,6 @@ var requestJoinCallback = null;
 var bigAnchorStreamID = '';
 var bigAnchorWidth = 360;
 var bigAnchorHeight = 640;
-var gTimeoutID = null;
 var mTimeDiff = 0;
 
 /**
@@ -427,10 +434,34 @@ function receiveMsg(msg) {
                 });
                 userImgEvent(msg.userAvatar, 'leave')
             }
+        } else if (contentObj.cmd === 'AudienceCallLike') {
+            msg.userName = contentObj.data.userName;
+            msg.userAvatar = contentObj.data.userAvatar;
+            msg.number = contentObj.data.number
+
+            if (msg.userName && msg.number) {
+                event.onRecvRoomTextMsg && event.onRecvRoomTextMsg({
+                    userAvatar: msg.userAvatar,
+                    message: `${msg.userName} 送了 ${msg.number} 朵玫瑰🌹`,
+                    time: msg.time,
+                    type: 'AudienceCallLike'
+                });
+            }
         } else if (contentObj.cmd === 'RoomInfoUpdate') {
-            event.onRoomInfoUpdate && event.onRoomInfoUpdate({
-                roomInfo: contentObj.data
-            });
+            if (contentObj.data.anchorAvatar) {
+                event.onRoomInfoUpdate && event.onRoomInfoUpdate({
+                    roomInfo: contentObj.data
+                });
+            }
+        } else if (contentObj.cmd === 'CasterPreLink') {
+            const info = contentObj.data
+            if (info.userId === userBase.getGlobalData().userId) {
+                event.onCasterPreLink && event.onCasterPreLink(contentObj.data)
+            }
+        } else if (contentObj.cmd === 'AudienceToLink') {
+            if (userBase.getGlobalData().preLinkUserInfo) {
+                event.onAudienceToLink && event.onAudienceToLink(contentObj.data)
+            }
         } else if (contentObj.cmd === 'UserImgUpdate') {
             console.log('UserImgUpdateUserImgUpdate')
             msg.showUserImgList = contentObj.data.showUserImgList;
@@ -484,16 +515,18 @@ function receiveMsg(msg) {
 
 function sendRoomInfo() {
     const nowRoomInfo = roomInfoData.getRoomInfo()
-    const customMsg = {
-        cmd: "RoomInfoUpdate",
-        data: {
-            anchorAvatar: nowRoomInfo.anchorAvatar,
-            anchorName: nowRoomInfo.anchorName,
-            anchorDesc: nowRoomInfo.anchorDesc
+    if (nowRoomInfo && nowRoomInfo.anchorAvatar) {
+        const customMsg = {
+            cmd: "RoomInfoUpdate",
+            data: {
+                anchorAvatar: nowRoomInfo.anchorAvatar,
+                anchorName: nowRoomInfo.anchorName,
+                anchorDesc: nowRoomInfo.anchorDesc
+            }
         }
+        const strCustomMsg = JSON.stringify(customMsg);
+        webimhandler.sendCustomMsg({data: strCustomMsg, text: "notify"}, null)
     }
-    const strCustomMsg = JSON.stringify(customMsg);
-    webimhandler.sendCustomMsg({data: strCustomMsg, text: "notify"}, null)
 }
 
 function userImgEvent(userImg, eventType) {
@@ -906,6 +939,10 @@ function setListener(options) {
     };
     event.onRoomInfoUpdate = options.onRoomInfoUpdate || function () {
     };
+    event.onCasterPreLink = options.onCasterPreLink || function () {
+    };
+    event.onAudienceToLink = options.onAudienceToLink || function () {
+    };
 }
 
 /**
@@ -1308,10 +1345,6 @@ function requestJoinAnchor(object) {
     }
 
     requestJoinCallback = function (ret) {
-        if (gTimeoutID) {
-            clearTimeout(gTimeoutID);
-            gTimeoutID = null;
-        }
         if (ret.errCode) {
             object.fail && object.fail(ret);
         } else {
@@ -1319,24 +1352,10 @@ function requestJoinAnchor(object) {
         }
     }
 
-    var isTimeout = false;
-    gTimeoutID = setTimeout(function () {
-        gTimeoutID = null;
-        console.error('申请连麦超时:', JSON.stringify(object.data));
-        isTimeout = true;
-        requestJoinCallback && requestJoinCallback({
-            errCode: -999,
-            errMsg: '申请加入连麦超时'
-        });
-    }, (object.data && object.data.timeout) ? object.data.timeout : 30000);
-
     var msg = {
         data: JSON.stringify(body)
     }
     webimhandler.sendC2CCustomMsg(roomInfo.roomCreator, msg, function (ret) {
-        if (isTimeout) {
-            return;
-        }
         if (ret && ret.errCode) {
             console.log('请求连麦失败:', JSON.stringify(ret));
             requestJoinCallback && requestJoinCallback(ret);
@@ -1522,13 +1541,15 @@ function doMergeRequest(mergeInfo, callback) {
 function createMergeInfo(mergeStreams) {
     console.log("混流原始信息:", JSON.stringify(mergeStreams));
 
-    var smallAnchorWidth = 160;
-    var smallAnchorHeight = 240;
-    var offsetHeight = 90;
+    let smallAnchorWidth = 162;
+    let smallAnchorHeight = 288;
+    let offsetHeight = 96;
+    let offsetWidth = 15
     if (bigAnchorWidth < 540 || bigAnchorHeight < 960) {
-        smallAnchorWidth = 120;
-        smallAnchorHeight = 180;
-        offsetHeight = 60;
+        smallAnchorWidth = 126;
+        smallAnchorHeight = 224;
+        offsetHeight = 64;
+        offsetWidth = 10
     }
 
     //组装混流JSON结构体
@@ -1545,8 +1566,8 @@ function createMergeInfo(mergeStreams) {
         streamInfoArray.push(bigAnchorInfo);
 
         //小主播
-        var subLocationX = bigAnchorWidth - smallAnchorWidth;
-        var subLocationY = bigAnchorHeight - smallAnchorHeight - offsetHeight;
+        var subLocationX = bigAnchorWidth - smallAnchorWidth - offsetWidth * 2;
+        var subLocationY = offsetHeight;
         if (mergeStreams && mergeStreams.length > 0) {
             var layerIndex = 0
             mergeStreams.forEach(function (val) {
@@ -1558,7 +1579,7 @@ function createMergeInfo(mergeStreams) {
                         image_width: smallAnchorWidth,
                         image_height: smallAnchorHeight,
                         location_x: subLocationX,
-                        location_y: subLocationY - layerIndex * smallAnchorHeight
+                        location_y: subLocationY + layerIndex * smallAnchorHeight
                     }
                 }
                 streamInfoArray.push(smallAchorInfo);

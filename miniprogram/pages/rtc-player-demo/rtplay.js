@@ -237,7 +237,7 @@ Page({
     this.stop();
 
     wx.setKeepScreenOn({
-      keepScreenOn: false,
+      keepScreenOn: true,
     })
   },
 

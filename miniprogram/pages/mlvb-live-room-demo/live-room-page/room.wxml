@@ -1,12 +1,13 @@
 <view class='container-box'>
     <view wx:if="{{noLogin}}" class="content f-jc-ac">
-        <image class="bg-img" src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/define.png"></image>
+        <image class="bg-img" src="{{roomInfo.roomCoverImg ? roomInfo.roomCoverImg : 'cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/define.png'}}"></image>
         <view class="over-content f-c-jc-ac">
-            <image class="user-img" lazy-load="{{true}}" src="cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/punk-hd.png"></image>
-            <view class="user-name">小江客服</view>
-            <view class="tip">当前还没有用户呼叫客服</view>
-            <view class="sub-tip">您可以点击下方按钮进入大厅等待</view>
-            <view class="enter-room f-jc-ac" bindtap="onJumpServer">进入大厅</view>
+            <image class="user-img" lazy-load="{{true}}" src="{{roomInfo.anchorAvatar ? roomInfo.anchorAvatar : 'cloud://live-house-nodecloud.6c69-live-house-nodecloud-1301615752/punk-hd.png'}}"></image>
+            <view class="user-name">{{roomInfo.anchorName ? roomInfo.anchorName : '小江客服'}}</view>
+            <view class="tip">{{roomInfo.roomStatus === 0 ? '直播未开始' : roomInfo.roomStatus === 3 ? '直播已结束' : '当前还没有用户呼叫客服' }}</view>
+            <view class="desc">{{roomInfo.roomStatus === 0 ? roomInfo.desc : roomInfo.roomStatus === 3 ? roomInfo.desc : '' }}</view>
+            <view class="sub-tip">{{roomInfo.roomName ? roomInfo.roomName : '您可以点击下方按钮进入大厅等待'}}</view>
+            <view class="enter-room f-jc-ac" bindtap="onJumpServer">{{roomInfo.roomStatus === 0 ? '查看课表' : roomInfo.roomStatus === 3 ? '返回课表' : '进入大厅' }}</view>
         </view>
     </view>
 

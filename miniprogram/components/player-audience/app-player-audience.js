@@ -1,5 +1,11 @@
+import {RoomService} from "../../service/roomService";
+import {UserBase} from "../../utils/user-utils/user-base";
+
 const webimhandler = require('../../pages/components/mlvb-live-room/webim_handler');
 const liveroom = require('../../pages/components/mlvb-live-room/mlvbliveroomcore.js');
+
+const roomService = new RoomService()
+const userBase = new UserBase()
 
 let roseNumber = 0
 let roseTimeHandle = null
@@ -16,7 +22,8 @@ Component({
         roomInfoData: {type: Object, value: {}},
         requestLinkError: {type: Boolean, value: false},
         requestLinkOk: {type: Boolean, value: false},
-        linkPusherInfo: {type: Object, value: {}}
+        linkPusherInfo: {type: Object, value: {}},
+        preLinkInfo: {type: Object, value: {}},
     },
 
     observers: {
@@ -44,6 +51,61 @@ Component({
                     requestLinkOk: true
                 })
             }
+        },
+        "requestLinkError": function (requestLinkError) {
+            if (requestLinkError) {
+                this.setData({
+                    show: false
+                })
+                wx.showModal({
+                    content: '老师拒绝了您的连麦',
+                    showCancel: false
+                })
+                this.onCancelLink()
+            }
+        },
+        "preLinkInfo": function (preLinkInfo) {
+            const customMsg = {
+                cmd: "AudienceToLink",
+                data: {
+                    link: true,
+                    userId: userBase.getGlobalData().userId
+                }
+            }
+            if (preLinkInfo && preLinkInfo.userName) {
+                this.setData({
+                    show: false
+                })
+                wx.showModal({
+                    content: `${preLinkInfo.userName}老师邀请您通话`,
+                    cancelText: '拒绝',
+                    confirmText: '接受',
+                    success: (res) => {
+
+                        const nowTime = new Date().getTime()
+                        if ((nowTime - preLinkInfo.time) > 9 * 1000) {
+                            //  接听超时
+                            wx.showModal({
+                                content: '已经超过接听时间',
+                                showCancel: false
+                            })
+                        } else {
+                            if (res.confirm) {
+                                //  接受
+                                const strCustomMsg = JSON.stringify(customMsg);
+                                webimhandler.sendCustomMsg({data: strCustomMsg, text: "notify"}, null)
+                                this.onCancelLink()
+                            } else {
+                                //  拒绝
+                                customMsg.data.link = false
+                                const strCustomMsg = JSON.stringify(customMsg);
+                                webimhandler.sendCustomMsg({data: strCustomMsg, text: "notify"}, null)
+                                this.onCancelLink()
+                            }
+                        }
+                    }
+                })
+            }
         }
     },
 
@@ -59,7 +121,16 @@ Component({
         show: false,
         bgColor: 'rgba(0,0,0,0.75)',
         inCallLink: false,
-        callTime: 0
+        callTime: 0,
+        linkWiteList: [],
+        inWite: false,
+        index: 0
+    },
+
+    lifetimes: {
+        attached() {
+            this.updateLinkWiteList()
+        }
     },
 
     /**
@@ -93,13 +164,7 @@ Component({
             })
         },
         onSendRose() {
-            if (this.data.show) {
-                this.setData({
-                    show: false
-                })
-            } else {
-                this.realSendRose()
-            }
+            this.realSendRose()
         },
         realSendRose() {
             if (roseTimeHandle) {
@@ -114,11 +179,6 @@ Component({
             if (!number) {
                 return
             }
-
-            console.log('id_sendroseid_sendrose')
-            this.component = this.selectComponent("#id_sendrose")
-            console.log('this.component', this.component)
-            this.component.onSendRose()
             const userInfo = liveroom.getAccountInfo()
             const customMsg = {
                 cmd: "AudienceCallLike",
@@ -135,40 +195,48 @@ Component({
         },
 
         onLinkTeacher() {
+            this.updateLinkWiteList()
             this.setData({ show: true });
         },
-        onClickLink() {
-            this.triggerEvent('lintTeacher')
-            this.setData({
-                inCallLink: true
-            })
-            this.callTimeLoop()
-        },
-        onCloseSheet() {
-            this.setData({ show: false });
-        },
-        callTimeLoop() {
-            if (this.data.requestLinkError || this.data.requestLinkOk) {
-                if (this.data.requestLinkError) {
-                    wx.showModal({
-                        title: '连麦失败',
-                        content: '老师未接听',
-                        showCancel: false
+        updateLinkWiteList(setInWiteFalse = false) {
+            roomService.linkmicList(userBase.getGlobalData().sessionId, userBase.getGlobalData().roomId).then(linkWiteList => {
+                if (linkWiteList) {
+                    linkWiteList.forEach((item, index) => {
+                        if (item.userId === userBase.getGlobalData().userId) {
+                            item.order = '我'
+                            this.setData({
+                                inWite: true,
+                                index: index
+                            })
+                        }
                     })
                 }
                 this.setData({
-                    show: false,
-                    inCallLink: false,
-                    callTime: 0
+                    linkWiteList: linkWiteList ? linkWiteList : []
                 })
-            } else {
-                setTimeout(() => {
+                if(setInWiteFalse) {
                     this.setData({
-                        callTime: this.data.callTime + 1
+                        inWite: false
                     })
-                    this.callTimeLoop()
-                }, 1000)
-            }
+                }
+            })
+        },
+        onClickLink() {
+            roomService.linkmicPush(userBase.getGlobalData().sessionId, userBase.getGlobalData().roomId).then(() => {
+                this.setData({
+                    inWite: true
+                })
+                this.updateLinkWiteList()
+            }).catch(() => {})
+            this.triggerEvent('lintTeacher')
+        },
+        onCancelLink() {
+            roomService.linkmicPop(userBase.getGlobalData().sessionId, userBase.getGlobalData().roomId).then(() => {
+                this.updateLinkWiteList(true)
+            }).catch(() => {})
+        },
+        onCloseSheet() {
+            this.setData({ show: false });
         },
 
         onCallDown() {

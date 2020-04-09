@@ -40,7 +40,7 @@
                     </scroll-view>
                 </view>
                 <view wx:if="{{!inLink}}" class="wait-link f-c-jc-ac" bindtap="onShowSheet">
-                    <view class="wait-link-number" style="color: {{requestJoinAnchorList.length > 0 ? 'rgba(255,99,99,1)' : 'rgba(255,255,255,1)'}}">{{requestJoinAnchorList.length}}</view>
+                    <view class="wait-link-number" style="color: {{linkWiteList.length > 0 ? 'rgba(255,99,99,1)' : 'rgba(255,255,255,1)'}}">{{linkWiteList.length}}</view>
                     <view class="wait-lint-text">等待连麦</view>
                 </view>
             </view>
@@ -64,13 +64,13 @@
 
     <van-action-sheet bgColor="{{bgColor}}" show="{{ show }}" overlay="{{false}}" bind:close="onCloseSheet">
         <view class="sheet-content f-c-je-ac">
-            <view class="sheet-title f-js-ac">当前有 {{requestJoinAnchorList.length}} 人申请连麦</view>
-            <view class="join-item f-jb-ac" wx:for="{{requestJoinAnchorList}}" wx:for-item="item" wx:for-index="index" wx:key="index">
+            <view class="sheet-title f-js-ac">当前有 {{linkWiteList.length}} 人申请连麦</view>
+            <view class="join-item f-jb-ac" wx:for="{{linkWiteList}}" wx:for-item="item" wx:for-index="index" wx:key="index">
                 <view class="f-js-ac">
                     <view class="item-index">{{index + 1}}</view>
-                    <image class="item-user-img" src="{{item.userAvatar}}"></image>
+                    <image class="item-user-img" src="{{item.avatar}}"></image>
                     <view class="item-user-info f-c-js-ac">
-                        <view class="item-user-name">{{item.userName}}</view>
+                        <view class="item-user-name">{{item.nick}}</view>
                         <view class="item-join-type">视频申请</view>
                     </view>
                 </view>

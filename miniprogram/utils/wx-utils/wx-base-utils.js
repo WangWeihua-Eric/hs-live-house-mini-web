@@ -146,6 +146,43 @@ export function pageJump(url) {
 }
 
 /**
+ * 返回上一个小程序
+ */
+export function backJump(extraData = {}) {
+    return new Promise((resolve, reject) => {
+        wx.navigateBackMiniProgram({
+            extraData: extraData,
+            success: (res) => {
+                // 返回成功
+                resolve(res)
+            },
+            fail: (err) => {
+                reject(err)
+            }
+        })
+    })
+}
+
+/**
+ * 跳转新小程序
+ */
+export function jumpNewMini(appId, path = '', envVersion = 'trial') {
+    return new Promise((resolve, reject) => {
+        wx.navigateToMiniProgram({
+            appId: appId,
+            path: path,
+            envVersion: envVersion,
+            success: (res) => {
+                resolve(res)
+            },
+            fail: (err) => {
+                reject(err)
+            }
+        })
+    })
+}
+
+/**
  * 获取系统信息
  */
 export function getSystemInfo() {

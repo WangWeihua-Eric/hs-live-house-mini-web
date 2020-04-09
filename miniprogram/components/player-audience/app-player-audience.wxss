@@ -158,6 +158,18 @@
     overflow: hidden;
 }
 
+.pre-link {
+    width:190rpx;
+    height:84rpx;
+    background:rgba(255,255,255,1);
+    border-radius:42rpx;
+    font-size:32rpx;
+    font-family:SourceHanSansCN-Medium,SourceHanSansCN;
+    font-weight:500;
+    color:rgba(0,0,0,1);
+    margin-left: 30rpx;
+}
+
 .call-down {
     width: 100%;
 }
@@ -171,6 +183,10 @@
     font-family:SourceHanSansCN-Medium,SourceHanSansCN;
     font-weight:500;
     color:rgba(255,255,255,1);
+}
+
+.rose-btn {
+    height: 100%;
 }
 
 .real-input {
@@ -208,10 +224,71 @@
     font-size:30rpx;
     font-family:SourceHanSansCN-Regular,SourceHanSansCN;
     color:rgba(186,186,186,1);
+    margin-top: 19rpx;
+}
+
+.sheet-sub-tip {
+    font-size:30rpx;
+    font-family:SourceHanSansCN-Regular,SourceHanSansCN;
+    color:rgba(135,135,135,1);
+    margin-top: 180rpx;
+    margin-bottom: 214rpx;
+}
+
+.link-content {
+    width: 100%;
+    margin-top: 24rpx;
+}
+
+.user-link-item {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 25rpx 0;
+}
+
+.item-order {
+    font-size:30rpx;
+    font-family:PingFangSC-Medium,PingFang SC;
+    font-weight:500;
+    color:rgba(178,178,178,1);
+}
+
+.item-user-img {
+    width:64rpx;
+    height:64rpx;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-left: 34rpx;
+}
+
+.item-user-name {
+    font-size:30rpx;
+    font-family:SourceHanSansCN-Medium,SourceHanSansCN;
+    font-weight:500;
+    color:rgba(255,255,255,1);
+    margin-left: 30rpx;
+}
+
+.item-link-status {
+    font-size:30rpx;
+    font-family:SourceHanSansCN-Regular,SourceHanSansCN;
+    color:rgba(89,89,89,1);
 }
 
 .hidden-close-sheet {
     background-color: #4FC955;
+    border-radius: 10rpx;
+    width: 692rpx;
+    height: 84rpx;
+    font-size:32rpx;
+    font-family:SourceHanSansCN-Medium,SourceHanSansCN;
+    font-weight:500;
+    color:rgba(255,255,255,1);
+    margin-top: 49rpx;
+}
+
+.cancel-sheet {
+    background-color: #C94F58;
     border-radius: 10rpx;
     width: 692rpx;
     height: 84rpx;

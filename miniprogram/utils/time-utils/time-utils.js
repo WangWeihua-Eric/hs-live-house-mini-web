@@ -14,6 +14,16 @@ export function formatTime(time) {
 }
 
 /**
+ * 格式化时间戳 H:M
+ * @param time
+ * @returns {string}
+ */
+export function formatTimeHM(time) {
+    const thisTime = new Date(time)
+    return `${addZeroForDay(thisTime.getHours())}:${addZeroForDay(thisTime.getMinutes())}`
+}
+
+/**
  * 日期补 0 操作
  */
 export function addZeroForDay(num) {

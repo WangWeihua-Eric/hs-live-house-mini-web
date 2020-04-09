@@ -1,4 +1,13 @@
 import {debounceForFunction} from "../../utils/time-utils/time-utils";
+import {RoomService} from "../../service/roomService";
+import {UserBase} from "../../utils/user-utils/user-base";
+import {CasterActiveService} from "../../utils/room-utils/caster-utils/caster-active-service";
+
+const webimhandler = require('../../pages/components/mlvb-live-room/webim_handler');
+
+const roomService = new RoomService()
+const userBase = new UserBase()
+const casterActiveService = new CasterActiveService()
 
 Component({
     /**
@@ -9,7 +18,9 @@ Component({
         pusherStatus: {type: Number, value: 1},
         beauty: {type: Number, value: 5},
         requestJoinAnchorList: {type: Array, value: []},
-        members: {type: Array, value: []}
+        members: {type: Array, value: []},
+        linkError: {type: Boolean, value: false},
+        linkOk: {type: Boolean, value: false}
     },
 
     /**
@@ -25,6 +36,7 @@ Component({
         bgColor: 'rgba(0,0,0,0.75)',
         inLink: false,
         inLinkUser: {},
+        linkWiteList: []
     },
 
     observers: {
@@ -48,6 +60,7 @@ Component({
             }
         },
         "members": function (members) {
+            this.updateLinkWiteList()
             if(members && members.length) {
                 let inLink = false
                 members.forEach(item => {
@@ -63,6 +76,34 @@ Component({
                     inLink: false
                 })
             }
+
+            setTimeout(() => {
+                wx.setKeepScreenOn({
+                    keepScreenOn: true
+                })
+            }, 10000)
+        },
+        "requestJoinAnchorList": function () {
+            this.updateLinkWiteList()
+        },
+        "linkError": function (linkError) {
+            if (linkError) {
+                //  用户拒绝接听
+                const userId = userBase.getGlobalData().preLinkUserInfo.userID
+                const list = this.data.linkWiteList.filter(item => item.userId !== userId)
+                this.setData({
+                    linkWiteList: list
+                })
+                this.rejectLink(userId)
+            }
+        }
+    },
+
+    lifetimes: {
+        attached() {
+            wx.setKeepScreenOn({
+                keepScreenOn: true
+            })
         }
     },
 
@@ -70,6 +111,18 @@ Component({
      * 组件的方法列表
      */
     methods: {
+        rejectLink(userId) {
+            roomService.teacherLinkmicPop(userBase.getGlobalData().sessionId, userBase.getGlobalData().roomId, userId).then(() => {
+                this.updateLinkWiteList()
+            })
+        },
+        updateLinkWiteList() {
+            casterActiveService.updateLinkList().then(linkWiteList => {
+                this.setData({
+                    linkWiteList: linkWiteList ? linkWiteList : []
+                })
+            })
+        },
         onPlayLive() {
             this.setData({
                 playStatus: 2
@@ -121,44 +174,40 @@ Component({
         },
 
         onShowSheet() {
+            this.updateLinkWiteList()
             this.setData({ show: true });
         },
         onResolveLinkEvent(event) {
-            const audience = event.currentTarget.dataset.value
-            const params = {
-                agree: true,
-                audience: audience
-            }
-            this.triggerEvent('opLinkEvent', params)
-            this.onCloseSheet()
+            const userInfo = event.currentTarget.dataset.value
+            const userID = userInfo.userId
+            const userName = userInfo.nick
+            const userAvatar = userInfo.avatar
             this.setData({
-                inLink: true,
-                inLinkUser: audience
+                show: false
             })
+            casterActiveService.resolveLink(userID, userName, userAvatar)
         },
         onRejectLinkEvent(event) {
-            const audience = event.currentTarget.dataset.value
-
-            const requestJoinAnchorList = this.data.requestJoinAnchorList
-            const requestJoinAnchorListTemp = requestJoinAnchorList.filter(item => item.userAvatar !== audience.userAvatar)
+            const userInfo = event.currentTarget.dataset.value
+            const userID = userInfo.userId
+            const userName = userInfo.nick
+            const userAvatar = userInfo.avatar
+            const list = this.data.linkWiteList.filter(item => item.userId !== userID)
             this.setData({
-                requestJoinAnchorList: requestJoinAnchorListTemp
+                linkWiteList: list
             })
-
-            const params = {
-                agree: false,
-                audience: audience
-            }
-            this.triggerEvent('opLinkEvent', params)
+            casterActiveService.rejectLink(userID, userName, userAvatar)
         },
         onCloseLink() {
-            const closeUser = this.data.inLinkUser
+            const closeUser = userBase.getGlobalData().preLinkUserInfo
             if (closeUser) {
                 this.triggerEvent('onCloseLinkEvent', closeUser)
             }
+            userBase.setGlobalData({
+                preLinkUserInfo: null
+            })
             this.setData({
-                inLink: false,
-                inLinkUser: {}
+                inLink: false
             })
         },
         onBackBtn() {

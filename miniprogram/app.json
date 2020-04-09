@@ -1,7 +1,6 @@
 {
   "pages": [
     "pages/mlvb-live-room-demo/live-room-page/room",
-    "pages/audience-room-list/audience-room-list",
     "pages/caster-login/caster-login",
     "pages/liveRoomList/liveRoomList",
     "pages/home-page/main",
@@ -23,5 +22,8 @@
     "navigationBarTextStyle": "white",
     "navigationStyle": "custom"
   },
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "navigateToMiniProgramAppIdList": [
+    "wxa7740225caabc3ea"
+  ]
 }

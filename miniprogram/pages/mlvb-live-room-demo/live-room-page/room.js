@@ -1,11 +1,13 @@
-import {getSetting, pageJump} from "../../../utils/wx-utils/wx-base-utils";
+import {backJump, getSetting, jumpNewMini, pageJump} from "../../../utils/wx-utils/wx-base-utils";
 import {RoomInfoService} from "./service/roomInfoService";
+import {formatTime, formatTimeHM} from "../../../utils/time-utils/time-utils";
+import {UserBase} from "../../../utils/user-utils/user-base";
 
 const liveroom = require('../../components/mlvb-live-room/mlvbliveroomcore.js')
-const GenerateTestUserSig = require("../../mlvb-live-room-demo/debug/GenerateTestUserSig.js")
 
 const app = getApp()
 const roomService = new RoomInfoService()
+const userBase = new UserBase()
 
 let loadOptions = {}
 
@@ -33,7 +35,8 @@ Page({
         statusBarHeight: app.globalData.statusBarHeight,
         inputFocus: false,
         scopeUserInfo: true,
-        noLogin: false
+        noLogin: false,
+        roomInfo: {}
     },
 
     refresh(options) {
@@ -45,12 +48,10 @@ Page({
         const userName = options.userName
         const userAvatar = options.userAvatar
 
-        const userSig = GenerateTestUserSig.genTestUserSig(userId)
-
         const loginInfo = {
-            sdkAppID: userSig.sdkAppID,
+            sdkAppID: userBase.getGlobalData().roomAppId,
             userID: userId,
-            userSig: userSig.userSig,
+            userSig: userBase.getGlobalData().userSig,
             userName: userName,
             userAvatar: userAvatar
         }
@@ -89,6 +90,7 @@ Page({
         loadOptions = options
 
         const userId = options.userId
+        console.log(options)
         const userName = options.userName
         const userAvatar = options.userAvatar
         const roomID = options.roomID
@@ -107,18 +109,64 @@ Page({
             })
         } else {
             if (!userId || !userName || !userAvatar || !roomID || !roomName || !sessionId) {
+                //  审核状态
                 this.setData({
                     noLogin: true
                 })
             } else {
-                roomService.queryRoomInfo(sessionId, roomID).then(res => {
-                    console.log('roomroom: ', res)
+                const userInfo = {
+                    userId: userId,
+                    userName: userName,
+                    userAvatar: userAvatar,
+                    roomID: roomID,
+                    roomName: roomName,
+                    sessionId: sessionId
+                }
+
+                userBase.setGlobalData(userInfo)
+
+                roomService.queryRoomInfo(sessionId, roomID).then(roomInfo => {
+                    this.formatRoomInfo(roomInfo)
+                    userBase.setGlobalData(roomInfo)
+                    const roomStatus = roomInfo.roomStatus
+                    this.setData({
+                        roomInfo: roomInfo
+                    })
+
+                    if (roomStatus === 0) {
+                        //  未开播
+                        // this.setData({
+                        //     noLogin: true
+                        // })
+
+                        this.setData({
+                            noLogin: false
+                        })
+                        this.refresh(options)
+                    } else if (roomStatus === 1 || roomStatus === 2) {
+                        //  直播中
+                        this.setData({
+                            noLogin: false
+                        })
+                        this.refresh(options)
+                    } else {
+                        //  直播结束
+                        this.setData({
+                            noLogin: true
+                        })
+                    }
                 })
-                this.setData({
-                    noLogin: false
-                })
-                this.refresh(options)
             }
+        }
+    },
+
+    formatRoomInfo(data) {
+        const start = data.startTime
+        const end = data.finishTime
+        if (data.roomStatus === 0) {
+            data.desc = `${formatTime(start)} - ${formatTimeHM(end)}`
+        } else if (data.roomStatus === 3) {
+            data.desc = '我们将在6小时内提供回看视频，敬请期待'
         }
     },
 
@@ -132,11 +180,14 @@ Page({
     onRoomEvent: function (e) {
         var self = this;
         var args = e.detail;
-        console.log('onRoomEvent', args)
         switch (args.tag) {
             case 'roomClosed': {
+                const roomInfo = this.data.roomInfo
+                roomInfo.roomStatus = 3
+                roomInfo.desc = '我们将在6小时内提供回看视频，敬请期待'
                 self.setData({
-                    noLogin: true
+                    noLogin: true,
+                    roomInfo: roomInfo
                 })
                 break;
             }
@@ -406,7 +457,14 @@ Page({
     },
 
     onJumpServer() {
-        const url = '../../caster-login/caster-login'
-        pageJump(url).then(() => {}).catch(() => {})
+        const roomInfo = this.data.roomInfo
+        if (roomInfo.roomStatus === 0 || roomInfo.roomStatus === 3) {
+            backJump().then(() => {}).catch(() => {
+                jumpNewMini('wxa7740225caabc3ea').then(() => {}).catch(() => {})
+            })
+        } else {
+            const url = '../../caster-login/caster-login'
+            pageJump(url).then(() => {}).catch(() => {})
+        }
     }
 })

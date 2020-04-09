@@ -56,8 +56,6 @@ export function http(url, param, method, header = {'content-type': 'application/
                                         reject(againError)
                                     }
                                 })
-                                const userBase = new UserBase()
-                                userBase.setGlobalData(sessionInfo.result.data)
                                 wx.setStorage({
                                     key:"sessionId",
                                     data: {

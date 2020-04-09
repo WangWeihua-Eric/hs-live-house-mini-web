@@ -49,6 +49,13 @@ Page {
     margin-top: 18rpx;
 }
 
+.desc {
+    font-size:32rpx;
+    font-family:PingFangSC-Regular,PingFang SC;
+    color:rgba(173,173,173,1);
+    margin-top: 6rpx;
+}
+
 .sub-tip {
     font-size:32rpx;
     font-family:PingFangSC-Regular,PingFang SC;

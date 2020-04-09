@@ -16,10 +16,16 @@
 }
 
 .send-rose {
+    width: 34rpx;
+    height: 55rpx;
+}
+
+.send-rose-btn {
     width: 84rpx;
     height: 84rpx;
     border-radius: 50%;
     overflow: hidden;
+    background-color: white;
 }
 
 .call-tip-item0 {

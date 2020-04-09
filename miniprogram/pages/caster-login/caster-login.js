@@ -2,10 +2,12 @@ import {CasterLoginService} from "./service/casterLoginService";
 import {pageJump} from "../../utils/wx-utils/wx-base-utils";
 import {getWithWhere} from "../../utils/wx-utils/wx-db-utils";
 import Toast from '@vant/weapp/toast/toast';
+import {UserBase} from "../../utils/user-utils/user-base";
 
 const md5 = require('md5');
 const casterLoginService = new CasterLoginService()
 const app = getApp()
+const userBase = new UserBase()
 
 Page({
 
@@ -36,8 +38,8 @@ Page({
                     app.globalData.inReview = true
                 } else {
                     this.setData({
-                        phoneValue: '',
-                        pwValue: '',
+                        phoneValue: '18610637369',
+                        pwValue: '123456',
                         title: '红松直播讲师端',
                         subtitle: '学知识、交朋友'
                     });
@@ -131,6 +133,7 @@ Page({
 
         casterLoginService.casterToLogin(params).then(res => {
             const sessionId = res.sessionId
+            userBase.setGlobalData({sessionId: sessionId})
             const url = `../liveRoomList/liveRoomList?sessionId=${sessionId}`
             pageJump(url).then(() => {
             }).catch(() => {

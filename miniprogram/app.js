@@ -35,6 +35,5 @@ App({
             headerHeight: headHeight,
             statusBarHeight: statusBarHeight
         }
-        initSessionId()
     }
 })

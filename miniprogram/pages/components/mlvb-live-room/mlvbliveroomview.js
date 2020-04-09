@@ -1,5 +1,12 @@
+import {UserBase} from "../../../utils/user-utils/user-base";
+import {RoomService} from "../../../service/roomService";
+
 var liveroom = require('./mlvbliveroomcore.js');
 const app = getApp()
+
+const roomService = new RoomService()
+
+const userBase = new UserBase()
 
 // 没使用到
 var errorCode = [
@@ -85,7 +92,10 @@ Component({
         showUserImgList: [],
         roomInfoData: {},
         requestLinkOk: false,
-        requestLinkError: false
+        requestLinkError: false,
+        preLinkInfo: {},
+        linkError: false,
+        linkOk: false
     },
 
     methods: {
@@ -259,7 +269,9 @@ Component({
                 onAnchorExit: self.onAnchorExit,
                 onAnchorEnter: self.onAnchorEnter,
                 onUserImgUpdate: self.onUserImgUpdate,
-                onRoomInfoUpdate: self.onRoomInfoUpdate
+                onRoomInfoUpdate: self.onRoomInfoUpdate,
+                onCasterPreLink: self.onCasterPreLink,
+                onAudienceToLink: self.onAudienceToLink
             });
         },
 
@@ -414,25 +426,16 @@ Component({
         onRequestJoinAnchor(pusher) {
             const self = _this;
 
-            if(self.data.requestJoinAnchorList.length > 2) {
-                self.respondJoinAnchor(false, pusher)
-                return
-            }
-
-            const userId = pusher.userID
+            // const userId = pusher.userID
+            // wx.showModal({
+            //     content: userId
+            // })
             const requestJoinAnchorList = self.data.requestJoinAnchorList
             requestJoinAnchorList.push(pusher)
             self.setData({
                 requestJoinAnchorList: requestJoinAnchorList
             })
-            setTimeout(() => {
-                const nowRequestJoinAnchorList = self.data.requestJoinAnchorList.filter(item => item.userID !== userId)
-                self.setData({
-                    requestJoinAnchorList: nowRequestJoinAnchorList
-                })
-            }, 9000)
 
-            console.log('onRequestJoinAnchor() called, pusher = ', JSON.stringify(pusher))
             // self.triggerEvent('RoomEvent', {
             //     tag: 'requestJoinAnchor',
             //     code: 0,
@@ -453,7 +456,9 @@ Component({
                 onAnchorEnter: self.onAnchorEnter,
                 onKickoutJoinAnchor: self.onKickoutJoinAnchor,
                 onUserImgUpdate: self.onUserImgUpdate,
-                onRoomInfoUpdate: self.onRoomInfoUpdate
+                onRoomInfoUpdate: self.onRoomInfoUpdate,
+                onCasterPreLink: self.onCasterPreLink,
+                onAudienceToLink: self.onAudienceToLink
             });
             liveroom.enterRoom({
                 data: {
@@ -603,7 +608,7 @@ Component({
                 url: self.data.audience.mixUrl,
                 mode: 'live',
                 maxCache: 3,
-                minCache: 1,
+                minCache: 5,
                 loading: false,
                 objectFit: 'fillCrop',
                 userName: self.data.audience.pusherName
@@ -746,9 +751,6 @@ Component({
                 requestLinkOk: false
             })
             liveroom.requestJoinAnchor({
-                data: {
-                    timeout: 10000
-                },
                 success: function (ret) {
                     self.data.requestLinking = false;
                     console.log('请求连麦成功: ', ret)
@@ -759,10 +761,13 @@ Component({
                 },
                 fail: function (e) {
                     console.log('请求连麦失败: ', e)
-                    self.data.requestLinking = false;
+
                     self.setData({
                         requestLinkError: true
                     })
+                    roomService.linkmicPop(userBase.getGlobalData().sessionId, userBase.getGlobalData().roomId).then(() => {})
+
+                    self.data.requestLinking = false;
                     // self.triggerEvent('RoomEvent', {
                     //     tag: 'error',
                     //     code: -9004,
@@ -1091,7 +1096,6 @@ Component({
         },
 
         onRecvRoomTextMsg(ret) {
-            console.log("onRecvRoomTextMsg called, ret: ", ret)
             var self = _this
             if (self.data) {
                 const roomTextList = self.data.roomTextList ? self.data.roomTextList : []
@@ -1119,6 +1123,46 @@ Component({
             self.setData({
                 roomInfoData: roomInfoData
             })
+        },
+        onCasterPreLink(ret) {
+            const self = _this;
+
+            if (!self.data.isCaster) {
+                self.setData({
+                    preLinkInfo: ret
+                })
+            }
+        },
+        onAudienceToLink(ret) {
+            const self = _this;
+            self.setData({
+                linkError: false,
+                linkOk: false
+            })
+            const userId = ret.userId
+            if (ret.link) {
+                userBase.setGlobalData({
+                    linkOk: true
+                })
+                self.setData({
+                    linkOk: true
+                })
+                if (userBase.getGlobalData().preLinkUserInfo.userID === userId) {
+                    self.respondJoinAnchor(true, userBase.getGlobalData().preLinkUserInfo)
+                }
+            } else {
+                userBase.setGlobalData({
+                    linkOk: true
+                })
+                self.setData({
+                    linkError: true,
+                    requestJoinAnchorList: []
+                })
+                wx.showModal({
+                    content: '用户拒绝接听',
+                    showCancel: false
+                })
+            }
         },
         onSketchpadData(ret) {
             var self = _this;

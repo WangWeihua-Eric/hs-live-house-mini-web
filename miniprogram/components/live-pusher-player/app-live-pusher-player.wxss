@@ -24,7 +24,7 @@
     width: 260rpx;
     height: 330rpx;
     right: 20rpx;
-    top: 192rpx;
+    top: 160rpx;
     overflow: hidden;
     flex-direction: column-reverse;
 }

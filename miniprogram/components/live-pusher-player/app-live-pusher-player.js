@@ -26,7 +26,10 @@ Component({
         showUserImgList: {type: Array, value: []},
         roomInfoData: {type: Object, value: {}},
         requestLinkError: {type: Boolean, value: false},
-        requestLinkOk: {type: Boolean, value: false}
+        requestLinkOk: {type: Boolean, value: false},
+        preLinkInfo: {type: Object, value: {}},
+        linkError: {type: Boolean, value: false},
+        linkOk: {type: Boolean, value: false}
     },
 
     observers: {
