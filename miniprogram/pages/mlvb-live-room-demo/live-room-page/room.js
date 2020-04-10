@@ -134,15 +134,15 @@ Page({
                     })
 
                     if (roomStatus === 0) {
-                        //  未开播
-                        // this.setData({
-                        //     noLogin: true
-                        // })
-
+                        // 未开播
                         this.setData({
-                            noLogin: false
+                            noLogin: true
                         })
-                        this.refresh(options)
+
+                        // this.setData({
+                        //     noLogin: false
+                        // })
+                        // this.refresh(options)
                     } else if (roomStatus === 1 || roomStatus === 2) {
                         //  直播中
                         this.setData({

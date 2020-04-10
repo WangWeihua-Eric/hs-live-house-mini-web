@@ -149,7 +149,12 @@ Page({
             pageJump(url).then(() => {
             }).catch(() => {
             })
-        }).catch(() => {})
+        }).catch(() => {
+            wx.showModal({
+                content: '现在还不能进房间',
+                showCancel: false
+            })
+        })
     },
 
     /**

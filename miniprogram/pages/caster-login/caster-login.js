@@ -38,8 +38,8 @@ Page({
                     app.globalData.inReview = true
                 } else {
                     this.setData({
-                        phoneValue: '18610637369',
-                        pwValue: '123456',
+                        phoneValue: '',
+                        pwValue: '',
                         title: '红松直播讲师端',
                         subtitle: '学知识、交朋友'
                     });
